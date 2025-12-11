@@ -143,8 +143,8 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Home Button -->
-    <a href="{{ path('home') }}" class="btn-home">
+
+    <a href="index.html" class="btn-home">
         <svg class="home-icon" viewBox="0 0 24 24">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -152,23 +152,27 @@
         Home
     </a>
 
-    <!-- Header -->
-    <h1>Which trees do you want?</h1>
-    <p class="subtitle">Use the search bar to find specific species.</p>
+    <h1>Which tree do you want to plant?</h1>
+    <p class="subtitle">Select a species to find the best place for it.</p>
 
     <!-- Search Bar -->
     <div class="search-container">
-        <input type="text" class="search-input" placeholder="Search tree names..." />
+        <input type="text" class="search-input" placeholder="Search tree names...">
         <svg class="search-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
     </div>
 
-    <!-- Selection Counter -->
-    <div class="counter" id="counter-text">0 Trees Selected</div>
+    <!--
+      THE HIDDEN FORM
+      Update action="YOUR_PHP_FILE_HERE" later
+    -->
+    <form id="tree-selection-form" action="{{ path('georoots_treeMap') }}" method="POST" style="display: none;">
+        <input type="hidden" name="treeName" id="selected-tree-input">
+    </form>
 
-    <!-- Buttons Grid -->
+    <!-- The Grid of Buttons -->
     <div class="tags-container" id="button-grid">
         <button class="crop-btn">Agave</button>
         <button class="crop-btn">Almonds</button>
@@ -361,8 +365,9 @@
         <button class="crop-btn">Zucchini</button>
     </div>
 
+    <!-- SCRIPT -->
     <script>
-        // Trie Node
+        // 1. Trie Data Structure & DFS (For Search)
         class TrieNode {
             constructor() {
                 this.children = {};
@@ -371,7 +376,6 @@
             }
         }
 
-        // Trie Class
         class Trie {
             constructor() {
                 this.root = new TrieNode();
@@ -380,9 +384,7 @@
                 let currentNode = this.root;
                 const cleanWord = word.toLowerCase();
                 for (let char of cleanWord) {
-                    if (!currentNode.children[char]) {
-                        currentNode.children[char] = new TrieNode();
-                    }
+                    if (!currentNode.children[char]) currentNode.children[char] = new TrieNode();
                     currentNode = currentNode.children[char];
                 }
                 currentNode.isEndOfWord = true;
@@ -401,21 +403,16 @@
             }
             dfs(node, results) {
                 if (node.isEndOfWord) results.push(node.fullWord);
-                for (let char in node.children) {
-                    this.dfs(node.children[char], results);
-                }
+                for (let char in node.children) this.dfs(node.children[char], results);
             }
         }
 
+        // 2. Initialize Search
         const cropTrie = new Trie();
         const allButtons = document.querySelectorAll('.crop-btn');
-
-        allButtons.forEach(btn => {
-            cropTrie.insert(btn.innerText);
-        });
+        allButtons.forEach(btn => cropTrie.insert(btn.innerText));
 
         const searchInput = document.querySelector('.search-input');
-
         searchInput.addEventListener('input', (e) => {
             const val = e.target.value;
             if (val === "") {
@@ -424,28 +421,31 @@
                 const matches = cropTrie.search(val);
                 const matchSet = new Set(matches);
                 allButtons.forEach(btn => {
-                    if (matchSet.has(btn.innerText)) {
-                        btn.style.display = "block";
-                    } else {
-                        btn.style.display = "none";
-                    }
+                    if (matchSet.has(btn.innerText)) btn.style.display = "block";
+                    else btn.style.display = "none";
                 });
             }
         });
 
-        const counterText = document.getElementById('counter-text');
-        let count = 0;
+        // 3. NEW LOGIC: SINGLE CHOICE FORM SUBMIT
+        const hiddenForm = document.getElementById('tree-selection-form');
+        const hiddenInput = document.getElementById('selected-tree-input');
 
         allButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                btn.classList.toggle('selected');
-                if (btn.classList.contains('selected')) {
-                    count++;
-                } else {
-                    count--;
-                }
-                counterText.textContent = count + " Trees Selected";
+                // Get the text (e.g., "Oak")
+                const selectedTree = btn.innerText;
+
+                // Put it in the hidden input
+                hiddenInput.value = selectedTree;
+
+                // Log for debugging (you can remove this later)
+                console.log("Submitting selection: " + selectedTree);
+
+                // Submit the form
+                hiddenForm.submit();
             });
         });
+
     </script>
 {% endblock %}

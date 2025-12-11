@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tree Placement Analysis</title>
+    <style>
+        body, html { margin:0; padding:0; height:100%; font-family:'Segoe UI', sans-serif; }
+        #map { width:100%; height:100vh; }
+
+        /* Floating Panel Styles */
+        .ui-panel {
+            position: absolute; top: 20px; left: 20px; z-index: 50;
+            background: rgba(255,255,255,0.95);
+            width: 340px; padding: 15px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        h2 { margin: 0 0 10px 0; color: #2c3e50; font-size: 18px; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; }
+        .label-text { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; margin-top: 10px; display:block; }
+
+        /* Inputs & Buttons */
+        .input-row { display: flex; gap: 5px; margin-top: 5px; }
+        input[type="text"] { flex: 1; padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; outline:none; }
+        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:600; }
+        button:hover { background: #34495e; }
+        button:disabled { background: #95a5a6; cursor: default; }
+
+        /* Tree Status Card */
+        .tree-profile {
+            background: #f8f9fa; border-left: 5px solid #bdc3c7;
+            padding: 10px; margin-top: 10px; border-radius: 4px; display: none;
+        }
+        .profile-loaded { border-left-color: #e67e22; background: #fff; border:1px solid #eee; border-left: 5px solid #e67e22;}
+
+        /* Results Box */
+        .analysis-result { margin-top: 15px; text-align: center; font-size: 13px; min-height: 40px; padding:10px; border-radius:4px;}
+        .result-good { background: #e8f8f5; color: #1e8449; border: 1px solid #abebc6; }
+        .result-bad { background: #fdedec; color: #c0392b; border: 1px solid #fadbd8; }
+
+        /* Legend */
+        .legend { margin-top:10px; font-size:11px; display:flex; justify-content:space-between; }
+        .legend-item span { display:inline-block; width:12px; height:12px; margin-right:4px; vertical-align:middle; }
+
+        /* Loader */
+        .spin { display:inline-block; width:12px; height:12px; border:2px solid #ccc; border-top-color:#333; border-radius:50%; animation: s 1s infinite linear; }
+        @keyframes s { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="ui-panel">
+    <h2>🌲 Georoots Matcher</h2>
+    <div style="font-size:12px; color:#555;">Find optimal areas to plant specific trees.</div>
+
+    <!-- 1. TREE SECTION -->
+    <span class="label-text">1. Selected Tree Specimen</span>
+    <div class="input-row">
+        <!-- Input Value populated by Controller if passed -->
+        <input id="treeInput" type="text" placeholder="E.g. Eucalyptus..." value="{{ treeName }}">
+        <button id="btnLoadTree">Load</button>
+    </div>
+
+    <!-- Tree Profile UI -->
+    <div id="treeCard" class="tree-profile">
+        <div style="display:flex; align-items:center;">
+            <div id="treeImg" style="width:40px; height:40px; background:#ddd; border-radius:50%; margin-right:10px; background-size:cover; flex-shrink:0;"></div>
+            <div>
+                <div id="treeDisplayTitle" style="font-weight:bold; color:#2c3e50;">-</div>
+                <div style="font-size:11px;">Water Req: <b id="treeWater" style="color:#d35400;">-</b></div>
+            </div>
+        </div>
+    </div>
+
+    <hr style="border:0; border-top:1px solid #ecf0f1; margin:15px 0;">
+
+    <!-- 2. MAP SEARCH -->
+    <span class="label-text">2. Target Region</span>
+    <div class="input-row">
+        <input id="cityInput" type="text" placeholder="Search City, Area...">
+        <button id="btnMapIt" style="background:#27ae60;">Scan Map</button>
+    </div>
+
+    <!-- Analysis Output -->
+    <div id="analysisBox" class="analysis-result" style="color:#7f8c8d; font-style:italic;">
+        Load a tree and search a location to begin analysis.
+    </div>
+
+    <!-- Legend -->
+    <div class="legend" id="mapLegend" style="opacity:0.5;">
+        <div class="legend-item"><span style="background:#2ecc71;"></span>Existing Forest</div>
+        <div class="legend-item"><span style="background:#c0392b; border:2px solid #7b241c;"></span>Vacant / Plant Here</div>
+    </div>
+</div>
+
+<div id="map"></div>
+
+<script>
+    let map;
+    let currentTree = null;   // Stores Biology data
+    let currentMatch = null;  // Stores Boolean: isSuitable?
+
+    // Incoming tree name from PHP
+    const SERVER_TREE_NAME = "{{ treeName|escape('js') }}";
+
+    function initMap() {
+        // Init Google Maps (Satellite is best for deforestation viewing)
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -2.333, lng: -55.123 }, // Default to Brazil/Amazon center
+            zoom: 5,
+            mapTypeId: 'satellite',
+            fullscreenControl: false, streetViewControl: false
+        });
+
+        // Setup Listener for Clicks
+        map.addListener('click', (e) => {
+            handleLocationUpdate(e.latLng.lat(), e.latLng.lng());
+        });
+
+        // If PHP sent a name, Auto-load
+        if(SERVER_TREE_NAME) {
+            fetchTreeBiology(SERVER_TREE_NAME);
+            document.getElementById('treeInput').disabled = true; // Lock input
+            document.getElementById('btnLoadTree').style.display = 'none'; // Hide button
+        }
+    }
+
+    // --- LOGIC A: LOAD TREE BIOLOGY ---
+    document.getElementById('btnLoadTree').addEventListener('click', () => {
+        const val = document.getElementById('treeInput').value;
+        if(val) fetchTreeBiology(val);
+    });
+
+    async function fetchTreeBiology(name) {
+        const card = document.getElementById('treeCard');
+        card.style.display = 'block';
+        card.innerHTML = '<div style="text-align:center"><span class="spin"></span> finding biology...</div>';
+
+        try {
+            const res = await fetch(`/api/find-tree-profile?q=${encodeURIComponent(name)}`);
+            const data = await res.json();
+
+            if(data.error) throw new Error(data.error);
+
+            // Save Global
+            currentTree = data;
+
+            // Render Card
+            const bg = data.image ? `url(${data.image})` : 'gray';
+            card.className = "tree-profile profile-loaded";
+            card.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <div style="width:40px; height:40px; background:${bg}; border-radius:50%; margin-right:10px; background-size:cover;"></div>
+                    <div>
+                        <div style="font-weight:bold; color:#e67e22;">${data.tree_name}</div>
+                        <div style="font-size:11px;">Water: <b>${data.watering}</b> | Scientific: <i>${data.scientific_name}</i></div>
+                    </div>
+                </div>`;
+
+        } catch(e) {
+            card.innerHTML = `<div style="color:red; font-size:11px;">Error: ${e.message}</div>`;
+        }
+    }
+
+    // --- LOGIC B: LOCATION SEARCH ---
+    document.getElementById('btnMapIt').addEventListener('click', async () => {
+        const city = document.getElementById('cityInput').value;
+        if(!city) return;
+
+        // Geocoding via Nominatim (Free)
+        try {
+            document.getElementById('btnMapIt').innerText = "...";
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+            const locs = await res.json();
+
+            if(!locs.length) throw new Error("City not found");
+
+            const lat = parseFloat(locs[0].lat);
+            const lng = parseFloat(locs[0].lon);
+
+            // Move Map
+            map.setCenter({lat, lng});
+            map.setZoom(11); // Closer zoom to see polygons
+
+            // Execute Full Logic
+            handleLocationUpdate(lat, lng);
+
+        } catch(e) { alert(e.message); }
+        finally { document.getElementById('btnMapIt').innerText = "Scan Map"; }
+    });
+
+    // --- MAIN ORCHESTRATOR ---
+    async function handleLocationUpdate(lat, lng) {
+        // 1. Analyze Suitability
+        await performSuitabilityCheck(lat);
+
+        // 2. Load Polygons (Using logic from ForestCoverController)
+        // Note: We use a larger radius to ensure we find "Red Areas" nearby
+        const radius = 25000;
+        const polygonUrl = `/api/forest-cover?lat=${lat}&lng=${lng}&radius=${radius}`;
+
+        loadAndStylePolygons(polygonUrl);
+    }
+
+    // --- LOGIC C: SUITABILITY CHECK ---
+    async function performSuitabilityCheck(lat) {
+        const ui = document.getElementById('analysisBox');
+        if(!currentTree) {
+            ui.innerHTML = "⚠️ Please load a tree first!";
+            return;
+        }
+
+        ui.innerHTML = "<span class='spin'></span> Checking environment compatibility...";
+
+        try {
+            const url = `/api/check-suitability?lat=${lat}&watering=${currentTree.watering}`;
+            const res = await fetch(url);
+            const json = await res.json();
+
+            currentMatch = json.is_suitable; // Store True/False
+
+            if(json.is_suitable) {
+                ui.className = "analysis-result result-good";
+                ui.innerHTML = `<strong>✔ OPTIMAL AREA!</strong><br>${json.message}<br><small>Red polygons on map are currently EMPHASIZED for planting.</small>`;
+            } else {
+                ui.className = "analysis-result result-bad";
+                ui.innerHTML = `<strong>✘ UNSUITABLE.</strong><br>${json.message}<br><small>Do not plant here.</small>`;
+            }
+
+        } catch(e) { ui.innerHTML = "Analysis Failed."; }
+    }
+
+    // --- LOGIC D: ARC GIS POLYGON HANDLING (Emphasize Red) ---
+    async function loadAndStylePolygons(url) {
+        // Clean old data
+        map.data.forEach(f => map.data.remove(f));
+
+        try {
+            const res = await fetch(url);
+            const geoData = await res.json();
+            map.data.addGeoJson(geoData);
+
+            // *** CRITICAL STYLING LOGIC ***
+            // Use Data from Logic C (currentMatch) to dictate style
+            map.data.setStyle(feature => {
+                const props = feature.getProperty('attributes') || feature.getProperty('properties') || {};
+
+                // 1. IDENTIFY IF FOREST OR EMPTY
+                // Simple heuristic based on ArcGIS GFW data structure
+                // Adjust keyword regex if your specific layer uses different terms
+                const attrString = JSON.stringify(props).toLowerCase();
+                const isExistingForest = /forest|tree|wood/.test(attrString);
+
+                // 2. DEFINE STYLES
+                if (isExistingForest) {
+                    // It's already a forest. Keep it green or make it subtle.
+                    return {
+                        fillColor: '#2ecc71',
+                        fillOpacity: 0.3,
+                        strokeColor: '#27ae60',
+                        strokeWeight: 1,
+                        zIndex: 1
+                    };
+                } else {
+                    // It is "Empty" / "Vacant" / "Deforested" (Our Target)
+
+                    if (currentMatch === true) {
+                        // SCENARIO: SUITABLE! -> EMPHASIZE THIS RED POLYGON
+                        return {
+                            fillColor: '#e74c3c', // Strong Red
+                            fillOpacity: 0.6,     // More visible
+                            strokeColor: '#c0392b', // Dark Red Border
+                            strokeWeight: 4,      // BOLD STROKE (The emphasis)
+                            zIndex: 100           // Bring to front
+                        };
+                    } else {
+                        // SCENARIO: NOT SUITABLE or Unknown -> Dim Red/Grey
+                        return {
+                            fillColor: '#95a5a6', // Greyish Red
+                            fillOpacity: 0.2,
+                            strokeColor: '#7f8c8d',
+                            strokeWeight: 1,
+                            zIndex: 2
+                        };
+                    }
+                }
+            });
+
+            // Make the legend opaque to signify map is active
+            document.getElementById('mapLegend').style.opacity = '1';
+
+        } catch(e) { console.error("Map Data Error", e); }
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&callback=initMap"></script>
+</body>
+</html>

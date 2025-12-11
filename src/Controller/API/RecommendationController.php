@@ -12,7 +12,6 @@ class RecommendationController extends AbstractController
 {
     private HttpClientInterface $client;
     // Replace with your actual Perenual API Key
-    private string $perenualApiKey = 'YOUR_PERENUAL_API_KEY';
 
     public function __construct(HttpClientInterface $client)
     {
@@ -32,7 +31,7 @@ class RecommendationController extends AbstractController
         $zone = $this->calculateHardinessZone((float)$lat);
 
         // 2. Query Perenual
-        $url = "https://perenual.com/api/species-list?key={$this->perenualApiKey}&hardiness={$zone}&indoor=0";
+        $url = "https://perenual.com/api/species-list?key={$_ENV['PERENUAL_API_KEY']}&hardiness={$zone}&indoor=0";
 
         try {
             $response = $this->client->request('GET', $url, [
