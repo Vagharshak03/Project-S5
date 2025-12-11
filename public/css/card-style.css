@@ -1,7 +1,7 @@
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 section {
@@ -31,11 +31,11 @@ section {
 }
 
 .card-front {
-    background-image: url('../img/card-front.jpg');
+    background-image: url('/img/card-front.jpg');
 }
 
 .card-back {
-    background-image: url('../img/card-back.jpg');
+    background-image: url('/img/card-back.jpg');
     transform: rotateY(180deg);
 }
 
@@ -90,10 +90,10 @@ section {
 }
 
 .name-text, .expiry-text{
-  font-family: "Poppins", sans-serif;
-  color: white;
-  font-size: 18px;
-  text-transform: uppercase;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    font-size: 18px;
+    text-transform: uppercase;
 }
 
 .inputs {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card</title>
+    <style>
+        .btn-donate {
+            display: block;
+            width: 90%;
+            padding: 15px;
+            background-color: #10B981;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+            margin-top: auto;
+        }
+
+        .btn-donate:hover {
+            background-color: #059669;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('css/card-style.css') }}" />
+</head>
+<body>
+<section>
+    <div class="card-display" id="card-display">
+        <div class="card-front">
+            <div class="card-numbers-display"></div>
+            <img class="type-img" id="type-img" src="{{ asset('img/unknown-type.png') }}" />
+            <p class="name-text" id="name-text"></p>
+            <p class="expiry-text" id="expiry-text"></p>
+        </div>
+        <div class="card-back">
+            <p class="cvc-text" id="cvc-text"></p>
+        </div>
+    </div>
+    <div class="inputs">
+        <p id="wrong-number-message" class="wrong-number-message">Invalid card number. Please, start with 3, 4, 5 or 6</p>
+        <input type="text" id="numbers-input" placeholder="Card number" />
+        <input type="text" id="name-input" placeholder="Name, Surname" />
+        <input type="date" id="expiry-input" placeholder="Expiration date" />
+        <input type="number" id="cvc-input" placeholder="CVC" />
+        <a href="{{ path('georoots_card') }}" class="btn-donate">Plant!</a>
+    </div>
+</section>
+<script src="{{ asset('js/card-form.js') }}"></script>
+</body>
+</html>

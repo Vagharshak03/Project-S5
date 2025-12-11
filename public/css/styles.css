@@ -929,20 +929,20 @@ a{
 
 
 
-/*   spesna footer   */
+/*  footer   */
 
-.spesna-info {
+.georoots-info {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
 
-.spesna-footer {
+.georoots-footer {
     background-color: black;
     color: #FAFAFA;
 }
 
-.spesna-info {
+.georoots-info {
     font-weight: 400;
     font-size: 20px;
     line-height: 100%;
@@ -950,11 +950,7 @@ a{
     flex: 1;
 }
 
-/* .spesna-policy {
-
-} */
-
-.spesna-info a, .spesna-info-2 a {
+.georoots-info a, .georoots-info-2 a {
     color: #FAFAFA;
 }
 
@@ -977,7 +973,7 @@ a{
     justify-content: space-around;
 }
 
-.spesna-info img {
+.georoots-info img {
     width: 151px;
     height: 51px;
     gap: 12px;
@@ -1223,6 +1219,8 @@ a{
 }
 
 
+
+
 /*  */
 
 .hero-titlee {
@@ -1244,7 +1242,7 @@ a{
     display: block;
 }
 
-    @media (min-width: 769px) {
+@media (min-width: 769px) {
     .hero-titlee h2 {
         font-size: 80px;
     }
@@ -1270,9 +1268,9 @@ a{
     .line-5 {
         display: none;
     }
-    }
+}
 
-    @media (max-width: 768px) {
+@media (max-width: 768px) {
     .hero-titlee h2 {
         font-size: 40px;
         gap: 14px;
@@ -1291,5 +1289,5 @@ a{
     .line-5 {
         display: block;
     }
-    }
+}
 

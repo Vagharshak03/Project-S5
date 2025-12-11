@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +20,12 @@ class IndexController extends AbstractController
 
 
     #[Route('/')]
-    public function index(): Response
+    public function index(SessionInterface $session): Response
     {
-        return $this->render('index.html.twig');
-    }
+        $user = $this->getUserSession($session);
+        return $this->render('index.html.twig', [
+            'user' => $user
+        ]);    }
 
     #[NoReturn] #[Route('/map')]
     public function map(): Response

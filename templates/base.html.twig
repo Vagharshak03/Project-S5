@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}My Project{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('georoots/css/styles.css') }}">
 
     {% block stylesheets %}
     {% endblock %}
@@ -12,12 +13,13 @@
 
 <body class="bg-light">
 
-{% block body %}
-    {# Child templates will inject their content here #}
-{% endblock %}
+{% if user %}
+    <div>Welcome, {{ user.fullname }} | <a href="{{ path('logout') }}">Logout</a></div>
+{% else %}
+    <div><a href="{{ path('login') }}">Login</a> | <a href="{{ path('register') }}">Register</a></div>
+{% endif %}
 
-{% block javascripts %}
-    {# You can add extra JS in child templates #}
-{% endblock %}
+{% block body %}{% endblock %}
+<script src="{{ asset('georoots/js/georoots.js') }}"></script>
 </body>
 </html>

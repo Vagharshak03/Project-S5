@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Choose Your Impact - PlanTree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #F4F7F6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .btn-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #FFFFFF;
+            color: #10B981;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .btn-home:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); }
+        .home-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .page-title {
+            text-align: center;
+            color: #1F2937;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 800;
+        }
+        .page-title span { color: #10B981; }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            width: 320px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        .card-image {
+            height: 200px;
+            width: 100%;
+            background-color: #E5E7EB;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 10px;
+        }
+
+        .card-price {
+            font-size: 36px;
+            color: #10B981;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .card-price span {
+            font-size: 16px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn-donate {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #10B981;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+            margin-top: auto;
+        }
+
+        .btn-donate:hover {
+            background-color: #059669;
+        }
+
+        .card.premium {
+            border: 2px solid #10B981;
+        }
+        .card.premium .card-price {
+            color: #059669;
+        }
+    </style>
+</head>
+<body>
+<a href="{{ path('georoots_index') }}" class="btn-home">
+    <svg class="home-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Home
+</a>
+
+<h1 class="page-title">Choose Your <span>Contribution</span></h1>
+
+<div class="cards-container">
+
+    <div class="card">
+        <img src="{{ asset('tree images/img-6.jpg') }}" alt="Armenia Landscape" class="card-image" />
+        <div class="card-content">
+            <h3 class="card-title">Plant in Armenia</h3>
+            <div class="card-price">$1 <span>/ tree</span></div>
+            <p class="card-desc">
+                Support reforestation in the Armenian highlands. Perfect for restoring native apricot and oak species.
+            </p>
+            <a href="{{ path('georoots_card') }}" class="btn-donate">Donate $1</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="{{ asset('tree images/rus.jpg') }}" alt="Russian Forest" class="card-image" />
+        <div class="card-content">
+            <h3 class="card-title">Plant in Russia</h3>
+            <div class="card-price">$2.50 <span>/ tree</span></div>
+            <p class="card-desc">
+                Help restore the vast taiga forests. Your donation supports resilient pine and birch planting projects.
+            </p>
+            <a href="{{ path('georoots_card') }}" class="btn-donate">Donate $2.50</a>
+        </div>
+    </div>
+
+    <div class="card premium">
+        <img src="{{ asset('tree images/amazon.jpg') }}" alt="Global Earth" class="card-image" />
+        <div class="card-content">
+            <h3 class="card-title">Global Impact</h3>
+            <div class="card-price">$400 <span>/ 100 trees</span></div>
+            <p class="card-desc">
+                <strong>Corporate & Bulk Package.</strong> Plant 100+ trees anywhere in the world. Includes a personalized certificate and GPS tracking report.
+            </p>
+            <a href="{{ path('georoots_card') }}" class="btn-donate">Plant 100 Trees</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

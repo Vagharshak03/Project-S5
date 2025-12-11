@@ -33,31 +33,31 @@ numberInput.addEventListener("input", () => {
         const char = numValue[i];
         const exists = allSpans[i];
 
-    if (exists) {
-        if (exists.textContent !== char) {
-            exists.textContent = char;
-            exists.classList.add("roll");
-        if (char === " ") {
-            exists.classList.add("space")
+        if (exists) {
+            if (exists.textContent !== char) {
+                exists.textContent = char;
+                exists.classList.add("roll");
+                if (char === " ") {
+                    exists.classList.add("space")
+                } else {
+                    exists.classList.remove("space")};
+                exists.addEventListener("animationend", () => {
+                    exists.classList.remove("roll");
+                });
+            }
         } else {
-            exists.classList.remove("space")};
-            exists.addEventListener("animationend", () => {
-            exists.classList.remove("roll");
-        });
-      }
-    } else {
-      const newSpan = document.createElement("span");
-      newSpan.classList.add("numbers-text");
-      newSpan.textContent = char;
-      newSpan.classList.add("roll");
+            const newSpan = document.createElement("span");
+            newSpan.classList.add("numbers-text");
+            newSpan.textContent = char;
+            newSpan.classList.add("roll");
 
-      if (char === " ") {
-        newSpan.classList.add("space");
-      }
+            if (char === " ") {
+                newSpan.classList.add("space");
+            }
 
-    cardNumDisplay.appendChild(newSpan);
+            cardNumDisplay.appendChild(newSpan);
+        }
     }
-  }
 
     while (cardNumDisplay.children.length > numValue.length) {
         cardNumDisplay.removeChild(cardNumDisplay.lastChild);
@@ -65,30 +65,30 @@ numberInput.addEventListener("input", () => {
 
 
     let firstDigit = numValue.charAt(0);
-        switch (firstDigit) {
-            case '3':
-                    cardType.src = "../img/american.png";
-                break;
-            case '4':
-                    cardType.src = "../img/visapng.png";
-                break;
-            case '5':
-                    cardType.src = "../img/master.png";
-                break;
-            case '6':
-                    cardType.src = "../img/discover.png";
-                break;
-            default:
-                    cardType.src = "../img/unknown-type.png";
-                break;
-        }
+    switch (firstDigit) {
+        case '3':
+            cardType.src = "/img/american.png";
+            break;
+        case '4':
+            cardType.src = "/img/visapng.png";
+            break;
+        case '5':
+            cardType.src = "/img/master.png";
+            break;
+        case '6':
+            cardType.src = "/img/discover.png";
+            break;
+        default:
+            cardType.src = "/img/unknown-type.png";
+            break;
+    }
 
-        const validNumList = [3,4,5,6];
+    const validNumList = [3,4,5,6];
 
-        if (numberInput.value.length === 0) {
-            messageElement.style.display = "none";
-        } else {
-            firstDigit = parseInt(numberInput.value[0], 10);
+    if (numberInput.value.length === 0) {
+        messageElement.style.display = "none";
+    } else {
+        firstDigit = parseInt(numberInput.value[0], 10);
 
         if (!validNumList.includes(firstDigit)) {
             message = "Invalid card number";

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - PlanTree</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #F4F7F6;
+        }
+
+        .card {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #E5E7EB;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid #ECFDF5;
+        }
+
+        .user-name {
+            color: #1F2937;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background-color: #F9FAFB;
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            border: 1px solid #E5E7EB;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: #10B981;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: transparent;
+            border: 1px solid #EF4444;
+            color: #EF4444;
+        }
+
+        .btn-logout:hover {
+            background-color: #FEF2F2;
+        }
+
+        .btn-map {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background-color: #10B981;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            margin-bottom: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-map:hover {
+            background-color: #059669;
+        }
+
+        .map-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .btn-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #FFFFFF;
+            color: #10B981;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-icon {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* --- BUTTON GROUP STYLES --- */
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background-color: #10B981; /* Emerald Green */
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            margin-bottom: 10px; /* Space between buttons */
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #059669; /* Darker Green */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        /* Specific color for Donate to make it stand out (Optional - Gold/Yellow) */
+        .btn-donate-style {
+            background-color: #D97706; /* Warm Amber */
+        }
+        .btn-donate-style:hover {
+            background-color: #B45309;
+        }
+
+        /* Icon Styling */
+        .action-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Keep Sign Out distinct */
+        .btn-logout {
+            margin-top: 10px; /* Extra space before exit */
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Go to Main Page Button -->
+<a href="{{ path('georoots_index') }}" class="btn-home">
+    <svg class="home-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Home
+</a>
+
+<div class="card">
+    <!-- User Pic -->
+    <img src="https://via.placeholder.com/150/10B981/FFFFFF?text=User" alt="Profile" class="profile-pic">
+
+    <!-- User Info -->
+    <h2 class="user-name" id="display-name">Loading...</h2>
+    <p class="user-email" id="display-email">loading@example.com</p>
+
+    <!-- Stats -->
+    <div class="stats-container">
+        <div class="stat-box">
+            <span class="stat-number">0</span>
+            <span class="stat-label">Trees Planted</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-number">$0</span>
+            <span class="stat-label">Donated</span>
+        </div>
+    </div>
+
+    <!-- 1. DONATE BUTTON -->
+    <a href="{{ path('georoots_donate') }}" class="btn-action btn-donate-style">
+        <!-- Heart Icon -->
+        <svg class="action-icon" viewBox="0 0 24 24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        Donate Funds
+    </a>
+
+    <!-- 2. CHOOSE TREE BUTTON -->
+    <a href="{{ path('georoots_register') }}" class="btn-action">
+        <!-- Leaf Icon -->
+        <svg class="action-icon" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        Choose a Tree to Plant
+    </a>
+
+    <!-- 3. GO TO MAP BUTTON -->
+    <a href="#" class="btn-action">
+        <!-- Map Pin Icon -->
+        <svg class="action-icon" viewBox="0 0 24 24">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        Go to Map
+    </a>
+
+    <!-- 4. SIGN OUT BUTTON (Existing) -->
+    <button onclick="logout()" class="btn-logout">Sign Out</button>
+</div>
+
+</body>
+</html>

@@ -1,22 +1,19 @@
-{# templates/georoots/index.html.twig #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spesna</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeoRoots</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body>
 <header class="header container">
     <a href="{{ path('georoots_index') }}">
-        <img src="{{ asset('img/logo.JPG') }}" alt="Logo" class="logo">
+        <img src="{{ asset('tree images/logo.JPG') }}" alt="Logo" class="logo" />
     </a>
     <nav>
         <ul>
-            <li><a href="#">Services</a></li>
-            <li><a href="#culture">Culture</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="{{ path('georoots_donate') }}">Services</a></li>
             <li class="talk-item"><a href="{{ path('georoots_login') }}" class="talk-link">Login</a></li>
         </ul>
     </nav>
@@ -30,19 +27,24 @@
             </p>
             <div class="drivendiv">
                 <p class="drivenby">DRIVEN BY</p>
-                <p class="realimpact">REAL IMPACT</p>
+                <p class="realimpact">NATURE IMPACT</p>
             </div>
         </div>
     </div>
-
     <div class="hero-gallery-wrapper">
         <button class="ghost bt1"></button>
         <div class="hero-gallery-roll">
-            {% for i in [11,1,2,3,4,5,6,7,8,10,11,1,2,3,4,5,6,7,8,10] %}
-                <div class="gallery-image">
-                    <img src="{{ asset('tree-images/img-' ~ i ~ (i in [2,3,4,5,6,7,8,10] ? '.jpg' : '.jpg') ) }}" alt="">
-                </div>
-            {% endfor %}
+            <div class="gallery-image"><img src="{{ asset('tree images/img-11.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-1.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-2.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-3.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-4.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-5.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-6.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-7.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-8.jpg') }}" alt="" /></div>
+            <div class="gallery-image"><img src="{{ asset('tree images/img-10.jpg') }}" alt="" /></div>
+            <!-- Repeat as needed -->
         </div>
         <button class="ghost bt2"></button>
     </div>
@@ -51,12 +53,11 @@
 <section class="focus-area">
     <div class="container">
         <div class="focus-animations">
-            <img class="anim-1" src="{{ asset('videos/video_1.gif') }}" alt="">
-            <img class="anim-2" src="{{ asset('videos/video_2.gif') }}" alt="">
-            <img class="anim-3" src="{{ asset('videos/video_3.gif') }}" alt="">
-            <img class="anim-4" src="{{ asset('videos/video_4.gif') }}" alt="">
+            <img class="anim-1" src="{{ asset('videos/video_1.gif') }}" alt="" />
+            <img class="anim-2" src="{{ asset('videos/video_2.gif') }}" alt="" />
+            <img class="anim-3" src="{{ asset('videos/video_3.gif') }}" alt="" />
+            <img class="anim-4" src="{{ asset('videos/video_4.gif') }}" alt="" />
         </div>
-
         <div class="focus-content">
             <p class="focus-title">GEOROOTS'<br>FOCUS AREA</p>
             <p class="focus-description">
@@ -68,6 +69,19 @@
         </div>
     </div>
 </section>
+
+{# If needed, uncomment and update paths #}
+{#
+<section class="foundation">
+    ... your content ...
+    <img class="phone" src="{{ asset('img/phone.png') }}" alt="" />
+    <img class="screen" src="{{ asset('img/screen.png') }}" alt="" />
+    <img class="icons icon-js" src="{{ asset('img/javascript.png') }}" alt="js" />
+    <img class="icons icon-vscode" src="{{ asset('img/vs-code.png') }}" alt="vs-code" />
+    <img class="icons icon-copilot" src="{{ asset('img/copilot.png') }}" alt="copilot" />
+    <img class="icons icon-react" src="{{ asset('img/react-icon.png') }}" alt="react" />
+</section>
+#}
 
 <section class="selected-cases">
     <div class="container">
@@ -85,11 +99,10 @@
                     </div>
                     <button class="case-button">Planting</button>
                 </div>
-
                 <div class="case-images">
-                    <img class="main-img" src="{{ asset('tree-images/area.jpg') }}" alt="">
-                    <img class="side-img-1" src="{{ asset('tree-images/treetype.png') }}" alt="">
-                    <img class="side-img-2" src="{{ asset('tree-images/planted.jpg') }}" alt="">
+                    <img class="main-img" src="{{ asset('tree images/area.jpg') }}" alt="" />
+                    <img class="side-img-1" src="{{ asset('tree images/treetype.png') }}" alt="" />
+                    <img class="side-img-2" src="{{ asset('tree images/planted.jpg') }}" alt="" />
                 </div>
             </div>
 
@@ -97,15 +110,14 @@
                 <div class="case-item-description">
                     <div class="case-title-description">
                         <h3>Finding the Perfect Home</h3>
-                        <p>Have a favorite tree, like the mighty Oak or the resilient Baobab? Select your tree, and our algorithm will scan the globe to highlight the specific regions where that species will have the highest survival rate today.</p>
+                        <p> Have a favorite tree, like the mighty Oak or the resilient Baobab? Select your tree, and our algorithm will scan the globe to highlight the specific regions where that species will have the highest survival rate today.</p>
                     </div>
                     <button class="case-button">Planting</button>
                 </div>
-
                 <div class="case-images case-images-1">
-                    <img class="side-img-1-1" src="{{ asset('tree-images/oak.jpg') }}" alt="">
-                    <img class="side-img-1-2" src="{{ asset('tree-images/oakarea.jpg') }}" alt="">
-                    <img class="main-img-1" src="{{ asset('tree-images/algorithm.JPG') }}" alt="">
+                    <img class="side-img-1-1" src="{{ asset('tree images/oak.jpg') }}" alt="" />
+                    <img class="side-img-1-2" src="{{ asset('tree images/oakarea.jpg') }}" alt="" />
+                    <img class="main-img-1" src="{{ asset('tree images/algorithm.JPG') }}" alt="" />
                 </div>
             </div>
         </div>
@@ -118,14 +130,23 @@
             <div class="step-header">
                 <p>HOW<br>WE WORK</p>
             </div>
-
             <div class="how-we-work-grid">
-                {% for step in 1..4 %}
-                    <div class="step step-{{ step }}">
-                        <p class="step-p step-p-{{ step }}">{{ 'Step ' ~ step }}</p>
-                        <img class="step-img" src="{{ asset('tree-images/step-' ~ step ~ (step in [2,3] ? '.JPG' : '.jpg') ) }}" alt="step-{{ step }}">
-                    </div>
-                {% endfor %}
+                <div class="step step-1">
+                    <p class="step-p step-p-1">Step 1</p>
+                    <img class="step-img" src="{{ asset('tree images/step-1.jpg') }}" alt="step-1" />
+                </div>
+                <div class="step step-2">
+                    <p class="step-p">Step 2</p>
+                    <img class="step-img" src="{{ asset('tree images/step-2.JPG') }}" alt="step-2" />
+                </div>
+                <div class="step step-3">
+                    <p class="step-p">Step 3</p>
+                    <img class="step-img" src="{{ asset('tree images/step-3.JPG') }}" alt="step-3" />
+                </div>
+                <div class="step step-4">
+                    <p class="step-p">Step 4</p>
+                    <img class="step-img" src="{{ asset('tree images/step-4.jpg') }}" alt="step-4" />
+                </div>
             </div>
         </div>
     </div>
@@ -135,19 +156,20 @@
     <h2 class="reputation-title">Reputation is everything<br>so ours is flawless</h2>
     <div class="cards-roller">
         <div class="cards-grid">
-            {% for i in 1..5 %}
-                <article class="feedback-card">
-                    <header>
-                        <p>— Example {{ i }}</p>
-                    </header>
-                    <div class="card-body card-body-{{ i }}">
-                        <div class="chat-text">Sample feedback text {{ i }}</div>
-                    </div>
-                    <footer class="card-footer">
-                        <img src="{{ asset('tree-images/tree-icon.png') }}" alt="improvis">
-                    </footer>
-                </article>
-            {% endfor %}
+            <article class="feedback-card">
+                <header>
+                    <p>— Sarah J., Canada</p>
+                </header>
+                <div class="card-body card-body-1">
+                    <div class="chat-text">"I wanted to plant a Pine tree, but I didn't know where it would survive best.</div>
+                    <div class="chat-text">The website suggested a reforestation project in Northern Europe. It was so easy to use!"</div>
+                </div>
+                <footer class="card-footer">
+                    <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis" />
+                </footer>
+            </article>
+            <!-- Repeat other feedback cards, updating src paths similarly -->
+            <!-- ... -->
         </div>
     </div>
 </section>
@@ -159,69 +181,59 @@
             <p class="headerline-2">QUESTIONS</p>
             <p class="headerline-3">WE HAVE ANSWERS</p>
         </div>
-
         <div class="faq-accordion">
-            {% for q in [
-                {'question':'How does the website know where to plant the tree?', 'answer':'We use real-time climate data...'},
-                {'question':'Can I track the exact tree I planted?', 'answer':'While we cannot tag every single sapling...'},
-                {'question':'Can I gift a tree to someone else?', 'answer':'Absolutely! During the payment process...'},
-                {'question':'What happens after I donate?', 'answer':'Your funds are held securely until...'}
-            ] %}
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>{{ q.question }}</span>
-                        <svg width="15" height="10" viewBox="0 0 42 25">
-                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>{{ q.answer }}</p>
-                    </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How does the website know where to plant the tree?</span>
+                    <svg width="15" height="10" viewBox="0 0 42 25">
+                        <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>We use real-time climate data (temperature, rainfall, and soil type). If you pick a location, we cross-reference it with our botanical database to recommend trees that are scientifically proven to thrive there.</p>
                 </div>
-            {% endfor %}
+            </div>
+            <!-- Repeat other FAQ items similarly -->
+            <!-- ... -->
         </div>
     </div>
 </section>
 
-<footer class="spesna-footer">
+<footer class="georoots-footer">
     <div class="container">
         <div class="footer-wrapper">
-            <div class="spesna-info">
+            <div class="georoots-info">
                 <div>
-                    <img class="logo" src="{{ asset('tree-images/logo.JPG') }}" alt="logo">
+                    <img class="logo" src="{{ asset('tree images/logo.JPG') }}" alt="logo" />
                     <p style="margin: 0;">Yeraz Residential Community</p>
                     <p>Paruyr Sevak 1</p>
                     <a href="mailto:info@georoots.com?subject=Q&A">info@georoots.com</a>
                 </div>
-                <div class="spesna-policy">
-                    <a href="">Privacy Policy</a>
-                    <a href="">Terms of Services</a>
+                <div class="georoots-policy">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Services</a>
                 </div>
             </div>
-
-            <div class="spesna-info-2">
+            <div class="georoots-info-2">
                 <p class="idea">Have any suggestions?</p>
-                <a class="lets-talk" href="">LET'S TALK</a>
-
+                <a class="lets-talk" href="#">LET'S TALK</a>
                 <div class="contacts-1">
-                    <a href="">Services</a>
-                    <a href="">Work</a>
-                    <a href="">Culture</a>
-                    <a href="">Contact</a>
-                    <a href="">Careers</a>
+                    <a href="#">Services</a>
+                    <a href="#">Work</a>
+                    <a href="#">Culture</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Careers</a>
                 </div>
                 <div class="contacts-2">
-                    <a href="">LinkedIn</a>
-                    <a href="">Behance</a>
-                    <a href="">Instagram</a>
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Behance</a>
+                    <a href="#">Instagram</a>
                 </div>
-
                 <p class="rights">© 2025 GeoRoots. All rights reserved</p>
             </div>
         </div>
     </div>
 </footer>
-
-<script src="{{ asset('js/georoots.js') }}" defer></script>
+<script src="{{ asset('js/georoots.js') }}"></script>
 </body>
 </html>
