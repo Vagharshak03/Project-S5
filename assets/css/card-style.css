@@ -1,0 +1,185 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 200px;
+}
+
+.card-display {
+    position: relative;
+    width: 324px;
+    height: 204px;
+    margin-bottom: 20px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-back, .card-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    background-size: cover;
+    background-position: center;
+    backface-visibility: hidden;
+}
+
+.card-front {
+    background-image: url('../img/card-front.jpg');
+}
+
+.card-back {
+    background-image: url('../img/card-back.jpg');
+    transform: rotateY(180deg);
+}
+
+.flip {
+    transform: rotateY(180deg);
+}
+
+.card-numbers-display {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    letter-spacing: 2px;
+    width: fit-content;
+    height: 30px;
+    overflow: hidden;
+    left: 20px;
+    bottom: 65px;
+}
+
+.card-front {
+    position: absolute;
+    background-image: url('/img/card-front.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 324px;
+    height: 204px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.numbers-text{
+    display: inline-block;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 20px;
+    color: white;
+}
+
+.name-text {
+    position: absolute;
+    left: 20px;
+    bottom: 5px;
+    white-space: no-wrap;
+}
+
+.expiry-text {
+    position: absolute;
+    right: 22px;
+    bottom: 5px;
+}
+
+.name-text, .expiry-text{
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 300px;
+}
+
+.type-img {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    right: 60px;
+    top: 20px;
+    display: inline-block;
+    object-fit: contain;
+}
+
+.wrong-number-message {
+    color: rgb(129, 17, 32);
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+
+.digit {
+    display: inline-block;
+}
+
+@keyframes roll {
+    0% {
+        transform: translateY(20px);
+        opacity: 0.2;
+        filter: blur(2px);
+    }
+    20% {
+        transform: translateY(-20px);
+        opacity: 0.4;
+        filter: blur(2px);
+    }
+    40% {
+        transform: translateY(10px);
+        opacity: 0.6;
+        filter: blur(2px);
+    }
+    60%{
+        transform: translateY(-10px);
+        opacity: 0.8;
+        filter: blur(2px);
+    }
+    100%{
+        transform: translateY(0);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+.roll {
+    animation: roll 0.3s ease-in-out;
+}
+
+.space {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.cvc-text {
+    position: absolute;
+    top: px;
+    right: 30px;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 20px;
+    color: white;
+}
+
+.name-div {
+    display: inline-block;
+    width: auto;
+    max-width: 220px;
+}

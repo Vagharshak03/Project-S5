@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}My Project{% endblock %}</title>
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+
+<body class="bg-light">
+
+{% block body %}
+    {# Child templates will inject their content here #}
+{% endblock %}
+
+{% block javascripts %}
+    {# You can add extra JS in child templates #}
+{% endblock %}
+</body>
+</html>

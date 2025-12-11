@@ -1,0 +1,227 @@
+{# templates/georoots/index.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spesna</title>
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+</head>
+<body>
+<header class="header container">
+    <a href="{{ path('georoots_index') }}">
+        <img src="{{ asset('img/logo.JPG') }}" alt="Logo" class="logo">
+    </a>
+    <nav>
+        <ul>
+            <li><a href="#">Services</a></li>
+            <li><a href="#culture">Culture</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="talk-item"><a href="{{ path('georoots_login') }}" class="talk-link">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <p class="intro-description">
+                We are real builders <br> of our planet future.
+            </p>
+            <div class="drivendiv">
+                <p class="drivenby">DRIVEN BY</p>
+                <p class="realimpact">REAL IMPACT</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-gallery-wrapper">
+        <button class="ghost bt1"></button>
+        <div class="hero-gallery-roll">
+            {% for i in [11,1,2,3,4,5,6,7,8,10,11,1,2,3,4,5,6,7,8,10] %}
+                <div class="gallery-image">
+                    <img src="{{ asset('tree-images/img-' ~ i ~ (i in [2,3,4,5,6,7,8,10] ? '.jpg' : '.jpg') ) }}" alt="">
+                </div>
+            {% endfor %}
+        </div>
+        <button class="ghost bt2"></button>
+    </div>
+</section>
+
+<section class="focus-area">
+    <div class="container">
+        <div class="focus-animations">
+            <img class="anim-1" src="{{ asset('videos/video_1.gif') }}" alt="">
+            <img class="anim-2" src="{{ asset('videos/video_2.gif') }}" alt="">
+            <img class="anim-3" src="{{ asset('videos/video_3.gif') }}" alt="">
+            <img class="anim-4" src="{{ asset('videos/video_4.gif') }}" alt="">
+        </div>
+
+        <div class="focus-content">
+            <p class="focus-title">GEOROOTS'<br>FOCUS AREA</p>
+            <p class="focus-description">
+                We don't just plant trees. We plant the right trees in the right places.<br>
+                By combining geolocation data with climate science, we focus on<br>
+                regions where reforestation can<br>
+                restore biodiversity and combat soil erosion effectively.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="selected-cases">
+    <div class="container">
+        <div class="selected-cases-wrapper">
+            <div class="selected-cases-header">
+                <p class="header-1">SELECTED</p>
+                <p class="header-2">CASES</p>
+            </div>
+
+            <div class="case-item case-item-1">
+                <div class="case-item-description">
+                    <div class="case-title-description">
+                        <h3>Restoring Native Landscapes</h3>
+                        <p>When you choose a specific country on our map, our system analyzes the local soil and weather patterns to suggest indigenous trees that need help returning to that area. You pick the place; we ensure the roots take hold.</p>
+                    </div>
+                    <button class="case-button">Planting</button>
+                </div>
+
+                <div class="case-images">
+                    <img class="main-img" src="{{ asset('tree-images/area.jpg') }}" alt="">
+                    <img class="side-img-1" src="{{ asset('tree-images/treetype.png') }}" alt="">
+                    <img class="side-img-2" src="{{ asset('tree-images/planted.jpg') }}" alt="">
+                </div>
+            </div>
+
+            <div class="case-item case-item-2">
+                <div class="case-item-description">
+                    <div class="case-title-description">
+                        <h3>Finding the Perfect Home</h3>
+                        <p>Have a favorite tree, like the mighty Oak or the resilient Baobab? Select your tree, and our algorithm will scan the globe to highlight the specific regions where that species will have the highest survival rate today.</p>
+                    </div>
+                    <button class="case-button">Planting</button>
+                </div>
+
+                <div class="case-images case-images-1">
+                    <img class="side-img-1-1" src="{{ asset('tree-images/oak.jpg') }}" alt="">
+                    <img class="side-img-1-2" src="{{ asset('tree-images/oakarea.jpg') }}" alt="">
+                    <img class="main-img-1" src="{{ asset('tree-images/algorithm.JPG') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-we-work">
+    <div class="container">
+        <div class="how-we-work-wrapper">
+            <div class="step-header">
+                <p>HOW<br>WE WORK</p>
+            </div>
+
+            <div class="how-we-work-grid">
+                {% for step in 1..4 %}
+                    <div class="step step-{{ step }}">
+                        <p class="step-p step-p-{{ step }}">{{ 'Step ' ~ step }}</p>
+                        <img class="step-img" src="{{ asset('tree-images/step-' ~ step ~ (step in [2,3] ? '.JPG' : '.jpg') ) }}" alt="step-{{ step }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="reputation">
+    <h2 class="reputation-title">Reputation is everything<br>so ours is flawless</h2>
+    <div class="cards-roller">
+        <div class="cards-grid">
+            {% for i in 1..5 %}
+                <article class="feedback-card">
+                    <header>
+                        <p>— Example {{ i }}</p>
+                    </header>
+                    <div class="card-body card-body-{{ i }}">
+                        <div class="chat-text">Sample feedback text {{ i }}</div>
+                    </div>
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree-images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <div class="container">
+        <div class="faq-header">
+            <p class="headerline-1">YOU HAVE</p>
+            <p class="headerline-2">QUESTIONS</p>
+            <p class="headerline-3">WE HAVE ANSWERS</p>
+        </div>
+
+        <div class="faq-accordion">
+            {% for q in [
+                {'question':'How does the website know where to plant the tree?', 'answer':'We use real-time climate data...'},
+                {'question':'Can I track the exact tree I planted?', 'answer':'While we cannot tag every single sapling...'},
+                {'question':'Can I gift a tree to someone else?', 'answer':'Absolutely! During the payment process...'},
+                {'question':'What happens after I donate?', 'answer':'Your funds are held securely until...'}
+            ] %}
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>{{ q.question }}</span>
+                        <svg width="15" height="10" viewBox="0 0 42 25">
+                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>{{ q.answer }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<footer class="spesna-footer">
+    <div class="container">
+        <div class="footer-wrapper">
+            <div class="spesna-info">
+                <div>
+                    <img class="logo" src="{{ asset('tree-images/logo.JPG') }}" alt="logo">
+                    <p style="margin: 0;">Yeraz Residential Community</p>
+                    <p>Paruyr Sevak 1</p>
+                    <a href="mailto:info@georoots.com?subject=Q&A">info@georoots.com</a>
+                </div>
+                <div class="spesna-policy">
+                    <a href="">Privacy Policy</a>
+                    <a href="">Terms of Services</a>
+                </div>
+            </div>
+
+            <div class="spesna-info-2">
+                <p class="idea">Have any suggestions?</p>
+                <a class="lets-talk" href="">LET'S TALK</a>
+
+                <div class="contacts-1">
+                    <a href="">Services</a>
+                    <a href="">Work</a>
+                    <a href="">Culture</a>
+                    <a href="">Contact</a>
+                    <a href="">Careers</a>
+                </div>
+                <div class="contacts-2">
+                    <a href="">LinkedIn</a>
+                    <a href="">Behance</a>
+                    <a href="">Instagram</a>
+                </div>
+
+                <p class="rights">© 2025 GeoRoots. All rights reserved</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ asset('js/georoots.js') }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+#panel {
+    /*position: absolute; top: 10px; left: 10px; z-index: 5;*/
+    background: rgba(255,255,255,0.95); padding: 8px; border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    border: 5px;
+    width: 400px;
+    height: 200px; /* if header is 80px */
+}
