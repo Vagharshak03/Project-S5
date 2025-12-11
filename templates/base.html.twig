@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <title>{% block title %}My Project{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('georoots/css/styles.css') }}">
 
@@ -12,14 +12,12 @@
 </head>
 
 <body class="bg-light">
-
-{% if user %}
-    <div>Welcome, {{ user.fullname }} | <a href="{{ path('logout') }}">Logout</a></div>
-{% else %}
-    <div><a href="{{ path('login') }}">Login</a> | <a href="{{ path('register') }}">Register</a></div>
+{% if app.session is defined and app.session.get('user') is not null %}
+    {% set user = app.session.get('user') %}
 {% endif %}
+{% block body %}
 
-{% block body %}{% endblock %}
+{% endblock %}
 <script src="{{ asset('georoots/js/georoots.js') }}"></script>
 </body>
 </html>

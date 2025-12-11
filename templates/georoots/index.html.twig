@@ -1,239 +1,481 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GeoRoots</title>
+{% extends 'base.html.twig' %}
+
+{% block title %}GeoRoots{% endblock %}
+
+{% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-</head>
-<body>
-<header class="header container">
-    <a href="{{ path('georoots_index') }}">
-        <img src="{{ asset('tree images/logo.JPG') }}" alt="Logo" class="logo" />
-    </a>
-    <nav>
-        <ul>
-            <li><a href="{{ path('georoots_donate') }}">Services</a></li>
-            <li class="talk-item"><a href="{{ path('georoots_login') }}" class="talk-link">Login</a></li>
-        </ul>
-    </nav>
-</header>
+{% endblock %}
 
-<section class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <p class="intro-description">
-                We are real builders <br> of our planet future.
-            </p>
-            <div class="drivendiv">
-                <p class="drivenby">DRIVEN BY</p>
-                <p class="realimpact">NATURE IMPACT</p>
+{% block javascripts %}
+    <script src="{{ asset('js/georoots.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <header class="header container">
+        <a href="{{ path('home') }}">
+            <img src="{{ asset('tree images/logo.JPG') }}" alt="Logo" class="logo"/>
+        </a>
+        <nav>
+            <ul>
+                <li class="talk-item">
+                    <a href="{{ path('georoots_donate') }}">Services</a>
+                </li>
+                <li class="talk-item">
+                    <a href="{{ path('georoots_treechoice') }}">Tree Choice</a>
+                </li>
+
+                {% if user is defined %}
+                    <li class="talk-item">
+                        <a href="{{ path('georoots_profile') }}" class="btn btn-success">My Profile</a>
+                    </li>
+                {% else %}
+                    <li class="talk-item">
+                        <a href="{{ path('login') }}" class="talk-link">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <p class="intro-description">
+                    We are real builders <br> of our planet future.
+                </p>
+                <div class="drivendiv">
+                    <p class="drivenby">DRIVEN BY</p>
+                    <p class="realimpact">NATURE IMPACT</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="hero-gallery-wrapper">
-        <button class="ghost bt1"></button>
-        <div class="hero-gallery-roll">
-            <div class="gallery-image"><img src="{{ asset('tree images/img-11.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-1.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-2.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-3.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-4.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-5.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-6.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-7.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-8.jpg') }}" alt="" /></div>
-            <div class="gallery-image"><img src="{{ asset('tree images/img-10.jpg') }}" alt="" /></div>
-            <!-- Repeat as needed -->
-        </div>
-        <button class="ghost bt2"></button>
-    </div>
-</section>
-
-<section class="focus-area">
-    <div class="container">
-        <div class="focus-animations">
-            <img class="anim-1" src="{{ asset('videos/video_1.gif') }}" alt="" />
-            <img class="anim-2" src="{{ asset('videos/video_2.gif') }}" alt="" />
-            <img class="anim-3" src="{{ asset('videos/video_3.gif') }}" alt="" />
-            <img class="anim-4" src="{{ asset('videos/video_4.gif') }}" alt="" />
-        </div>
-        <div class="focus-content">
-            <p class="focus-title">GEOROOTS'<br>FOCUS AREA</p>
-            <p class="focus-description">
-                We don't just plant trees. We plant the right trees in the right places.<br>
-                By combining geolocation data with climate science, we focus on<br>
-                regions where reforestation can<br>
-                restore biodiversity and combat soil erosion effectively.
-            </p>
-        </div>
-    </div>
-</section>
-
-{# If needed, uncomment and update paths #}
-{#
-<section class="foundation">
-    ... your content ...
-    <img class="phone" src="{{ asset('img/phone.png') }}" alt="" />
-    <img class="screen" src="{{ asset('img/screen.png') }}" alt="" />
-    <img class="icons icon-js" src="{{ asset('img/javascript.png') }}" alt="js" />
-    <img class="icons icon-vscode" src="{{ asset('img/vs-code.png') }}" alt="vs-code" />
-    <img class="icons icon-copilot" src="{{ asset('img/copilot.png') }}" alt="copilot" />
-    <img class="icons icon-react" src="{{ asset('img/react-icon.png') }}" alt="react" />
-</section>
-#}
-
-<section class="selected-cases">
-    <div class="container">
-        <div class="selected-cases-wrapper">
-            <div class="selected-cases-header">
-                <p class="header-1">SELECTED</p>
-                <p class="header-2">CASES</p>
+        <div class="hero-gallery-wrapper">
+            <button class="ghost bt1"></button>
+            <div class="hero-gallery-roll">
+                <div class="gallery-image"><img src="{{ asset('tree images/img-11.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-1.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-2.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-3.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-4.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-5.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-6.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-7.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-8.jpg') }}" alt=""/></div>
+                <div class="gallery-image"><img src="{{ asset('tree images/img-10.jpg') }}" alt=""/></div>
+                <!-- Repeat as needed -->
             </div>
+            <button class="ghost bt2"></button>
+        </div>
+    </section>
 
-            <div class="case-item case-item-1">
-                <div class="case-item-description">
-                    <div class="case-title-description">
-                        <h3>Restoring Native Landscapes</h3>
-                        <p>When you choose a specific country on our map, our system analyzes the local soil and weather patterns to suggest indigenous trees that need help returning to that area. You pick the place; we ensure the roots take hold.</p>
+    <section class="focus-area">
+        <div class="container">
+            <div class="focus-animations">
+                <img class="anim-1" src="{{ asset('videos/video_1.gif') }}" alt="">
+                <img class="anim-2" src="{{ asset('videos/video_2.gif') }}" alt="">
+                <img class="anim-3" src="{{ asset('videos/video_3.gif') }}" alt="">
+                <img class="anim-4" src="{{ asset('videos/video_4.gif') }}" alt="">
+            </div>
+            <div class="focus-content">
+                <p class="focus-title">GEOROOTS'<br>FOCUS AREA</p>
+                <p class="focus-description">
+                    We don't just plant trees. We plant the right trees in the right places.<br>
+                    By combining geolocation data with climate science, we focus on<br>
+                    regions where reforestation can<br>
+                    restore biodiversity and combat soil erosion effectively.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+
+    {# If needed, uncomment and update paths #}
+    {#
+    <section class="foundation">
+        ... your content ...
+        <img class="phone" src="{{ asset('img/phone.png') }}" alt="" />
+        <img class="screen" src="{{ asset('img/screen.png') }}" alt="" />
+        <img class="icons icon-js" src="{{ asset('img/javascript.png') }}" alt="js" />
+        <img class="icons icon-vscode" src="{{ asset('img/vs-code.png') }}" alt="vs-code" />
+        <img class="icons icon-copilot" src="{{ asset('img/copilot.png') }}" alt="copilot" />
+        <img class="icons icon-react" src="{{ asset('img/react-icon.png') }}" alt="react" />
+    </section>
+    #}
+
+    <section class="selected-cases">
+        <div class="container">
+            <div class="selected-cases-wrapper">
+                <div class="selected-cases-header">
+                    <p class="header-1">SELECTED</p>
+                    <p class="header-2">CASES</p>
+                </div>
+
+                <div class="case-item case-item-1">
+                    <div class="case-item-description">
+                        <div class="case-title-description">
+                            <h3>Restoring Native Landscapes</h3>
+                            <p>When you choose a specific country on our map, our system analyzes the local soil and
+                                weather patterns to suggest indigenous trees that need help returning to that area. You
+                                pick the place; we ensure the roots take hold.</p>
+                        </div>
+                        <a href="{{ path('georoots_map') }}">
+                            <button class="case-button">Planting</button>
+                        </a>
                     </div>
-                    <button class="case-button">Planting</button>
-                </div>
-                <div class="case-images">
-                    <img class="main-img" src="{{ asset('tree images/area.jpg') }}" alt="" />
-                    <img class="side-img-1" src="{{ asset('tree images/treetype.png') }}" alt="" />
-                    <img class="side-img-2" src="{{ asset('tree images/planted.jpg') }}" alt="" />
-                </div>
-            </div>
-
-            <div class="case-item case-item-2">
-                <div class="case-item-description">
-                    <div class="case-title-description">
-                        <h3>Finding the Perfect Home</h3>
-                        <p> Have a favorite tree, like the mighty Oak or the resilient Baobab? Select your tree, and our algorithm will scan the globe to highlight the specific regions where that species will have the highest survival rate today.</p>
+                    <div class="case-images">
+                        <img class="main-img" src="{{ asset('tree images/area.jpg') }}" alt=""/>
+                        <img class="side-img-1" src="{{ asset('tree images/treetype.png') }}" alt=""/>
+                        <img class="side-img-2" src="{{ asset('tree images/planted.jpg') }}" alt=""/>
                     </div>
-                    <button class="case-button">Planting</button>
                 </div>
-                <div class="case-images case-images-1">
-                    <img class="side-img-1-1" src="{{ asset('tree images/oak.jpg') }}" alt="" />
-                    <img class="side-img-1-2" src="{{ asset('tree images/oakarea.jpg') }}" alt="" />
-                    <img class="main-img-1" src="{{ asset('tree images/algorithm.JPG') }}" alt="" />
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<section class="how-we-work">
-    <div class="container">
-        <div class="how-we-work-wrapper">
-            <div class="step-header">
-                <p>HOW<br>WE WORK</p>
-            </div>
-            <div class="how-we-work-grid">
-                <div class="step step-1">
-                    <p class="step-p step-p-1">Step 1</p>
-                    <img class="step-img" src="{{ asset('tree images/step-1.jpg') }}" alt="step-1" />
-                </div>
-                <div class="step step-2">
-                    <p class="step-p">Step 2</p>
-                    <img class="step-img" src="{{ asset('tree images/step-2.JPG') }}" alt="step-2" />
-                </div>
-                <div class="step step-3">
-                    <p class="step-p">Step 3</p>
-                    <img class="step-img" src="{{ asset('tree images/step-3.JPG') }}" alt="step-3" />
-                </div>
-                <div class="step step-4">
-                    <p class="step-p">Step 4</p>
-                    <img class="step-img" src="{{ asset('tree images/step-4.jpg') }}" alt="step-4" />
+                <div class="case-item case-item-2">
+                    <div class="case-item-description">
+                        <div class="case-title-description">
+                            <h3>Finding the Perfect Home</h3>
+                            <p> Have a favorite tree, like the mighty Oak or the resilient Baobab? Select your tree, and
+                                our algorithm will scan the globe to highlight the specific regions where that species
+                                will have the highest survival rate today.</p>
+                        </div>
+                        <a href="{{ path('georoots_treechoice') }}">
+                            <button class="case-button">Planting</button>
+                        </a>
+                    </div>
+                    <div class="case-images case-images-1">
+                        <img class="side-img-1-1" src="{{ asset('tree images/oak.jpg') }}" alt=""/>
+                        <img class="side-img-1-2" src="{{ asset('tree images/oakarea.jpg') }}" alt=""/>
+                        <img class="main-img-1" src="{{ asset('tree images/algorithm.JPG') }}" alt=""/>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="reputation">
-    <h2 class="reputation-title">Reputation is everything<br>so ours is flawless</h2>
-    <div class="cards-roller">
-        <div class="cards-grid">
-            <article class="feedback-card">
-                <header>
-                    <p>— Sarah J., Canada</p>
-                </header>
-                <div class="card-body card-body-1">
-                    <div class="chat-text">"I wanted to plant a Pine tree, but I didn't know where it would survive best.</div>
-                    <div class="chat-text">The website suggested a reforestation project in Northern Europe. It was so easy to use!"</div>
+    <section class="how-we-work">
+        <div class="container">
+            <div class="how-we-work-wrapper">
+                <div class="step-header">
+                    <p>HOW<br>WE WORK</p>
                 </div>
-                <footer class="card-footer">
-                    <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis" />
-                </footer>
-            </article>
-            <!-- Repeat other feedback cards, updating src paths similarly -->
-            <!-- ... -->
+                <div class="how-we-work-grid">
+                    <div class="step step-1">
+                        <p class="step-p step-p-1">Step 1</p>
+                        <img class="step-img" src="{{ asset('tree images/step-1.jpg') }}" alt="step-1">
+                    </div>
+                    <div class="step step-2">
+                        <p class="step-p">Step 2</p>
+                        <img class="step-img" src="{{ asset('tree images/step-2.JPG') }}" alt="step-2">
+                    </div>
+                    <div class="step step-3">
+                        <p class="step-p">Step 3</p>
+                        <img class="step-img" src="{{ asset('tree images/step-3.JPG') }}" alt="step-3">
+                    </div>
+                    <div class="step step-4">
+                        <p class="step-p">Step 4</p>
+                        <img class="step-img" src="{{ asset('tree images/step-4.jpg') }}" alt="step-4">
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="faq">
-    <div class="container">
-        <div class="faq-header">
-            <p class="headerline-1">YOU HAVE</p>
-            <p class="headerline-2">QUESTIONS</p>
-            <p class="headerline-3">WE HAVE ANSWERS</p>
-        </div>
-        <div class="faq-accordion">
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>How does the website know where to plant the tree?</span>
-                    <svg width="15" height="10" viewBox="0 0 42 25">
-                        <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
-                    </svg>
-                </button>
-                <div class="faq-answer">
-                    <p>We use real-time climate data (temperature, rainfall, and soil type). If you pick a location, we cross-reference it with our botanical database to recommend trees that are scientifically proven to thrive there.</p>
-                </div>
-            </div>
-            <!-- Repeat other FAQ items similarly -->
-            <!-- ... -->
-        </div>
-    </div>
-</section>
 
-<footer class="georoots-footer">
-    <div class="container">
-        <div class="footer-wrapper">
-            <div class="georoots-info">
-                <div>
-                    <img class="logo" src="{{ asset('tree images/logo.JPG') }}" alt="logo" />
-                    <p style="margin: 0;">Yeraz Residential Community</p>
-                    <p>Paruyr Sevak 1</p>
-                    <a href="mailto:info@georoots.com?subject=Q&A">info@georoots.com</a>
-                </div>
-                <div class="georoots-policy">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Services</a>
-                </div>
-            </div>
-            <div class="georoots-info-2">
-                <p class="idea">Have any suggestions?</p>
-                <a class="lets-talk" href="#">LET'S TALK</a>
-                <div class="contacts-1">
-                    <a href="#">Services</a>
-                    <a href="#">Work</a>
-                    <a href="#">Culture</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Careers</a>
-                </div>
-                <div class="contacts-2">
-                    <a href="#">LinkedIn</a>
-                    <a href="#">Behance</a>
-                    <a href="#">Instagram</a>
-                </div>
-                <p class="rights">© 2025 GeoRoots. All rights reserved</p>
+    <section class="reputation">
+        <h2 class="reputation-title">Reputation is everything<br>so ours is flawless</h2>
+        <div class="cards-roller">
+            <div class="cards-grid">
+                <article class="feedback-card">
+                    <header>
+                        <p>— Sarah J., Canada</p>
+                    </header>
+
+                    <div class="card-body card-body-1">
+                        <div class="chat-text">"I wanted to plant a Pine tree, but I didn't know where it would survive
+                            best.
+                        </div>
+                        <div class="chat-text">The website suggested a reforestation project in Northern Europe. It was
+                            so easy to use!"
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card dark-card">
+                    <header>
+                        <p>— Marc D., France</p>
+                    </header>
+
+                    <div class="card-body card-body-2">
+                        <div class="chat-text">Finally, a charity that uses logic.</div>
+                        <div class="chat-text">I love that I can click on a map near my home country and see exactly
+                            which trees are native and needed there.
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card">
+                    <header>
+                        <p>— Elena R., Spain</p>
+                    </header>
+
+                    <div class="card-body card-body-3">
+                        <div class="chat-text">"The 'Smart Match' feature is brilliant.</div>
+                        <div class="chat-text">It feels good knowing my donation isn't just symbolic—the tree is
+                            actually suited for that climate."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card dark-card">
+                    <header>
+                        <p>— Liam T., UK</p>
+                    </header>
+
+                    <div class="card-body card-body-4">
+                        <div class="chat-text">"I spent 20 minutes just playing with the map!</div>
+                        <div class="chat-text"> It is actually really educational to see how the tree recommendations
+                            change when you move from a tropical country to a colder one. I learned a lot before I even
+                            donated."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card">
+                    <header>
+                        <p>— Priya K., India</p>
+                    </header>
+
+                    <div class="card-body card-body-5">
+                        <div class="chat-text">"I bought this as a gift for my sister.</div>
+                        <div class="chat-text">She loved receiving the digital certificate showing the specific region
+                            in Brazil where her tree was matched. It felt much more personal than a standard charity
+                            donation."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+
+                <!------    ARTICLES DUPLICATES ------>
+                <article class="feedback-card">
+                    <header>
+                        <p>— Sarah J., Canada</p>
+                    </header>
+
+                    <div class="card-body card-body-1">
+                        <div class="chat-text">"I wanted to plant a Pine tree, but I didn't know where it would survive
+                            best.
+                        </div>
+                        <div class="chat-text">The website suggested a reforestation project in Northern Europe. It was
+                            so easy to use!"
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card dark-card">
+                    <header>
+                        <p>— Marc D., France</p>
+                    </header>
+
+                    <div class="card-body card-body-2">
+                        <div class="chat-text">Finally, a charity that uses logic.</div>
+                        <div class="chat-text">I love that I can click on a map near my home country and see exactly
+                            which trees are native and needed there.
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card">
+                    <header>
+                        <p>— Elena R., Spain</p>
+                    </header>
+
+                    <div class="card-body card-body-3">
+                        <div class="chat-text">"The 'Smart Match' feature is brilliant.</div>
+                        <div class="chat-text">It feels good knowing my donation isn't just symbolic—the tree is
+                            actually suited for that climate."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card dark-card">
+                    <header>
+                        <p>— Liam T., UK</p>
+                    </header>
+
+                    <div class="card-body card-body-4">
+                        <div class="chat-text">"I spent 20 minutes just playing with the map!</div>
+                        <div class="chat-text"> It is actually really educational to see how the tree recommendations
+                            change when you move from a tropical country to a colder one. I learned a lot before I even
+                            donated."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
+
+                <article class="feedback-card">
+                    <header>
+                        <p>— Priya K., India</p>
+                    </header>
+
+                    <div class="card-body card-body-5">
+                        <div class="chat-text">"I bought this as a gift for my sister.</div>
+                        <div class="chat-text">She loved receiving the digital certificate showing the specific region
+                            in Brazil where her tree was matched. It felt much more personal than a standard charity
+                            donation."
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <img src="{{ asset('tree images/tree-icon.png') }}" alt="improvis">
+                    </footer>
+                </article>
             </div>
         </div>
-    </div>
-</footer>
-<script src="{{ asset('js/georoots.js') }}"></script>
-</body>
-</html>
+    </section>
+
+    <section class="faq">
+        <div class="container">
+            <div class="faq-header">
+                <p class="headerline-1">YOU HAVE</p>
+                <p class="headerline-2">QUESTIONS</p>
+                <p class="headerline-3">WE HAVE ANSWERS</p>
+            </div>
+
+            <div class="faq-accordion">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How does the website know where to plant the tree?</span>
+
+                        <svg width="15" height="10" viewBox="0 0 42 25">
+                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We use real-time climate data (temperature, rainfall, and soil type). If you pick a location,
+                            we cross-reference it with our botanical database to recommend trees that are scientifically
+                            proven to thrive there.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I track the exact tree I planted?</span>
+
+                        <svg width="15" height="10" viewBox="0 0 42 25">
+                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>While we cannot tag every single sapling with GPS for cost reasons, we provide the precise
+                            coordinates of the reforestation block where your contribution was planted, along with
+                            photos of the project site.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I gift a tree to someone else?</span>
+
+                        <svg width="15" height="10" viewBox="0 0 42 25">
+                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! During the payment process, you can choose to send the digital certificate and
+                            the "Location Match" report to a friend or family member as a sustainable gift.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What happens after I donate?</span>
+
+                        <svg width="15" height="10" viewBox="0 0 42 25">
+                            <path d="M3 3L21 21L39 3" stroke="black" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Your funds are held securely until the next planting season for that specific region. We then
+                            disburse the funds to our certified local partners who purchase the saplings and manage the
+                            planting process.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="georoots-footer">
+        <div class="container">
+            <div class="footer-wrapper">
+                <div class="georoots-info">
+                    <div>
+                        <img class="logo" src="/tree images/logo.JPG" alt="logo">
+                        <p style="margin: 0;">Yeraz Residential Community</p>
+                        <p>Paruyr Sevak 1</p>
+                        <a href="mailto:info@georoots.com?subject=Q&A">info@georoots.com </a>
+                    </div>
+                    <div class="georoots-policy">
+                        <a href="">Privacy Policy</a>
+                        <a href="">Terms of Services</a>
+                    </div>
+                </div>
+
+                <div class="georoots-info-2">
+                    <p class="idea">Have any suggestions?</p>
+                    <a class="lets-talk" href="">LET'S TALK</a>
+
+                    <div class="contacts-1">
+                        <a href="">Services</a>
+                        <a href="">Work</a>
+                        <a href="">Culture</a>
+                        <a href="">Contact</a>
+                        <a href="">Careers</a>
+                    </div>
+                    <div class="contacts-2">
+                        <a href="">LinkedIn</a>
+                        <a href="">Behance</a>
+                        <a href="">Instagram</a>
+                    </div>
+
+                    <p class="rights">© 2025 GeoRoots. All rights reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}

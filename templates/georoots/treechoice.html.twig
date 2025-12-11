@@ -1,0 +1,451 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Select Trees - PlanTree {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #F4F7F6;
+            color: #1F2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+
+        .btn-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #FFFFFF;
+            color: #10B981;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .btn-home:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); }
+        .home-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #1F2937;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 25px;
+            padding-right: 50px;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 50px;
+            color: #374151;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #10B981;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: #9CA3AF;
+            fill: none;
+            stroke-width: 2;
+            cursor: pointer;
+        }
+
+        .counter {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #10B981;
+            background-color: #ECFDF5;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            max-width: 1000px;
+            padding: 0 20px;
+        }
+
+        .crop-btn {
+            background-color: #FFFFFF;
+            color: #4B5563;
+            border: 1px solid #E5E7EB;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .crop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        .crop-btn.selected {
+            background-color: #10B981;
+            color: #FFFFFF;
+            border-color: #10B981;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Home Button -->
+    <a href="{{ path('home') }}" class="btn-home">
+        <svg class="home-icon" viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home
+    </a>
+
+    <!-- Header -->
+    <h1>Which trees do you want?</h1>
+    <p class="subtitle">Use the search bar to find specific species.</p>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search tree names..." />
+        <svg class="search-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </div>
+
+    <!-- Selection Counter -->
+    <div class="counter" id="counter-text">0 Trees Selected</div>
+
+    <!-- Buttons Grid -->
+    <div class="tags-container" id="button-grid">
+        <button class="crop-btn">Agave</button>
+        <button class="crop-btn">Almonds</button>
+        <button class="crop-btn">Aloe</button>
+        <button class="crop-btn">Amaranth</button>
+        <button class="crop-btn">Anise</button>
+        <button class="crop-btn">Apples</button>
+        <button class="crop-btn">Apricots</button>
+        <button class="crop-btn">Areca Palm</button>
+        <button class="crop-btn">Artichokes</button>
+        <button class="crop-btn">Asparagus</button>
+        <button class="crop-btn">Avocados</button>
+        <button class="crop-btn">Azalea</button>
+        <button class="crop-btn">Banana (ornamental)</button>
+        <button class="crop-btn">Bananas</button>
+        <button class="crop-btn">Barley</button>
+        <button class="crop-btn">Beans</button>
+        <button class="crop-btn">Beets</button>
+        <button class="crop-btn">Begonia</button>
+        <button class="crop-btn">Bird of Paradise</button>
+        <button class="crop-btn">Blackberries</button>
+        <button class="crop-btn">Blueberries</button>
+        <button class="crop-btn">Blue Fescue</button>
+        <button class="crop-btn">Bougainvillea</button>
+        <button class="crop-btn">Brazil Nuts</button>
+        <button class="crop-btn">Broccoli</button>
+        <button class="crop-btn">Brussels Sprouts</button>
+        <button class="crop-btn">Buckwheat</button>
+        <button class="crop-btn">Cabbages</button>
+        <button class="crop-btn">Cacao</button>
+        <button class="crop-btn">Cactus</button>
+        <button class="crop-btn">Camellia</button>
+        <button class="crop-btn">Cantaloupes</button>
+        <button class="crop-btn">Cardamom</button>
+        <button class="crop-btn">Carrots</button>
+        <button class="crop-btn">Cashews</button>
+        <button class="crop-btn">Cassava</button>
+        <button class="crop-btn">Cattail</button>
+        <button class="crop-btn">Cauliflowers</button>
+        <button class="crop-btn">Celery</button>
+        <button class="crop-btn">Cherries</button>
+        <button class="crop-btn">Cherry Blossom</button>
+        <button class="crop-btn">Chestnuts</button>
+        <button class="crop-btn">Chickpeas</button>
+        <button class="crop-btn">Chilli</button>
+        <button class="crop-btn">Cinnamon</button>
+        <button class="crop-btn">Clementines</button>
+        <button class="crop-btn">Cloves</button>
+        <button class="crop-btn">Coconuts</button>
+        <button class="crop-btn">Coffee</button>
+        <button class="crop-btn">Corn</button>
+        <button class="crop-btn">Cotton</button>
+        <button class="crop-btn">Cowpeas</button>
+        <button class="crop-btn">Cranberries</button>
+        <button class="crop-btn">Creeping Thyme</button>
+        <button class="crop-btn">Cucumbers</button>
+        <button class="crop-btn">Cumin</button>
+        <button class="crop-btn">Currants</button>
+        <button class="crop-btn">Daffodil</button>
+        <button class="crop-btn">Dates</button>
+        <button class="crop-btn">Dragon Fruit</button>
+        <button class="crop-btn">Duckweed</button>
+        <button class="crop-btn">Echeveria</button>
+        <button class="crop-btn">Eggplants</button>
+        <button class="crop-btn">Fennel</button>
+        <button class="crop-btn">Fenugreek</button>
+        <button class="crop-btn">Figs</button>
+        <button class="crop-btn">Fonio</button>
+        <button class="crop-btn">Fountain Grass</button>
+        <button class="crop-btn">Garlic</button>
+        <button class="crop-btn">Ginger</button>
+        <button class="crop-btn">Gooseberries</button>
+        <button class="crop-btn">Grapefruits</button>
+        <button class="crop-btn">Guavas</button>
+        <button class="crop-btn">Hazelnuts</button>
+        <button class="crop-btn">Hemp</button>
+        <button class="crop-btn">Hibiscus</button>
+        <button class="crop-btn">Hops</button>
+        <button class="crop-btn">Hydrangea</button>
+        <button class="crop-btn">Impatiens</button>
+        <button class="crop-btn">Iris</button>
+        <button class="crop-btn">Ivy</button>
+        <button class="crop-btn">Jacaranda</button>
+        <button class="crop-btn">Jute</button>
+        <button class="crop-btn">Kale</button>
+        <button class="crop-btn">Kiwifruit</button>
+        <button class="crop-btn">Kola Nuts</button>
+        <button class="crop-btn">Leeks</button>
+        <button class="crop-btn">Lemons</button>
+        <button class="crop-btn">Lentils</button>
+        <button class="crop-btn">Lettuce</button>
+        <button class="crop-btn">Lily</button>
+        <button class="crop-btn">Linseed (Flax)</button>
+        <button class="crop-btn">Lotus</button>
+        <button class="crop-btn">Lupins</button>
+        <button class="crop-btn">Lychee</button>
+        <button class="crop-btn">Macadamia Nuts</button>
+        <button class="crop-btn">Magnolia</button>
+        <button class="crop-btn">Mandarin</button>
+        <button class="crop-btn">Mangos</button>
+        <button class="crop-btn">Maple</button>
+        <button class="crop-btn">Marigold</button>
+        <button class="crop-btn">Millet</button>
+        <button class="crop-btn">Mondo Grass</button>
+        <button class="crop-btn">Mung beans</button>
+        <button class="crop-btn">Mushrooms</button>
+        <button class="crop-btn">Mustard Greens</button>
+        <button class="crop-btn">Mustard Seed</button>
+        <button class="crop-btn">Nectarines</button>
+        <button class="crop-btn">Nutmeg and Mace</button>
+        <button class="crop-btn">Oak</button>
+        <button class="crop-btn">Oats</button>
+        <button class="crop-btn">Okra</button>
+        <button class="crop-btn">Olives</button>
+        <button class="crop-btn">Onions</button>
+        <button class="crop-btn">Oranges</button>
+        <button class="crop-btn">Palm Oil (Fruit)</button>
+        <button class="crop-btn">Pampas Grass</button>
+        <button class="crop-btn">Papayas</button>
+        <button class="crop-btn">Papyrus</button>
+        <button class="crop-btn">Parsnips</button>
+        <button class="crop-btn">Passion Fruit</button>
+        <button class="crop-btn">Peaches</button>
+        <button class="crop-btn">Peanuts</button>
+        <button class="crop-btn">Pears</button>
+        <button class="crop-btn">Peas</button>
+        <button class="crop-btn">Pecans</button>
+        <button class="crop-btn">Peony</button>
+        <button class="crop-btn">Pepper</button>
+        <button class="crop-btn">Peppermint</button>
+        <button class="crop-btn">Persimmons</button>
+        <button class="crop-btn">Petunia</button>
+        <button class="crop-btn">Pigeon Peas</button>
+        <button class="crop-btn">Pineapples</button>
+        <button class="crop-btn">Pine nuts</button>
+        <button class="crop-btn">Pistachios</button>
+        <button class="crop-btn">Plantains</button>
+        <button class="crop-btn">Plums</button>
+        <button class="crop-btn">Pomegranates</button>
+        <button class="crop-btn">Potatoes</button>
+        <button class="crop-btn">Pumpkins</button>
+        <button class="crop-btn">Quinoa</button>
+        <button class="crop-btn">Radishes</button>
+        <button class="crop-btn">Rapeseed (Canola)</button>
+        <button class="crop-btn">Raspberries</button>
+        <button class="crop-btn">Rhubarb</button>
+        <button class="crop-btn">Rice</button>
+        <button class="crop-btn">Rose</button>
+        <button class="crop-btn">Rubber</button>
+        <button class="crop-btn">Rutabagas</button>
+        <button class="crop-btn">Rye</button>
+        <button class="crop-btn">Safflower</button>
+        <button class="crop-btn">Sedum</button>
+        <button class="crop-btn">Sesame</button>
+        <button class="crop-btn">Sisal</button>
+        <button class="crop-btn">Snapdragon</button>
+        <button class="crop-btn">Sorghum</button>
+        <button class="crop-btn">Soya</button>
+        <button class="crop-btn">Soybeans</button>
+        <button class="crop-btn">Spinach</button>
+        <button class="crop-btn">Spring onions</button>
+        <button class="crop-btn">Squash (Summer)</button>
+        <button class="crop-btn">Squash (Winter)</button>
+        <button class="crop-btn">Strawberries</button>
+        <button class="crop-btn">Sugar Beets</button>
+        <button class="crop-btn">Sugar Cane</button>
+        <button class="crop-btn">Sunflowers</button>
+        <button class="crop-btn">Sweet Potatoes</button>
+        <button class="crop-btn">Swiss Chard</button>
+        <button class="crop-btn">Switchgrass</button>
+        <button class="crop-btn">Table Grapes</button>
+        <button class="crop-btn">Tangerines</button>
+        <button class="crop-btn">Taro</button>
+        <button class="crop-btn">Tea</button>
+        <button class="crop-btn">Teff</button>
+        <button class="crop-btn">Tomatoes</button>
+        <button class="crop-btn">Triticale</button>
+        <button class="crop-btn">Tulip</button>
+        <button class="crop-btn">Turmeric</button>
+        <button class="crop-btn">Turnips</button>
+        <button class="crop-btn">Vanilla</button>
+        <button class="crop-btn">Vinca</button>
+        <button class="crop-btn">Walnuts</button>
+        <button class="crop-btn">Water Lily</button>
+        <button class="crop-btn">Watermelons</button>
+        <button class="crop-btn">Wheat</button>
+        <button class="crop-btn">Wine Grapes</button>
+        <button class="crop-btn">Yams</button>
+        <button class="crop-btn">Zinnia</button>
+        <button class="crop-btn">Zucchini</button>
+    </div>
+
+    <script>
+        // Trie Node
+        class TrieNode {
+            constructor() {
+                this.children = {};
+                this.isEndOfWord = false;
+                this.fullWord = null;
+            }
+        }
+
+        // Trie Class
+        class Trie {
+            constructor() {
+                this.root = new TrieNode();
+            }
+            insert(word) {
+                let currentNode = this.root;
+                const cleanWord = word.toLowerCase();
+                for (let char of cleanWord) {
+                    if (!currentNode.children[char]) {
+                        currentNode.children[char] = new TrieNode();
+                    }
+                    currentNode = currentNode.children[char];
+                }
+                currentNode.isEndOfWord = true;
+                currentNode.fullWord = word;
+            }
+            search(prefix) {
+                let currentNode = this.root;
+                const cleanPrefix = prefix.toLowerCase();
+                for (let char of cleanPrefix) {
+                    if (!currentNode.children[char]) return [];
+                    currentNode = currentNode.children[char];
+                }
+                let results = [];
+                this.dfs(currentNode, results);
+                return results;
+            }
+            dfs(node, results) {
+                if (node.isEndOfWord) results.push(node.fullWord);
+                for (let char in node.children) {
+                    this.dfs(node.children[char], results);
+                }
+            }
+        }
+
+        const cropTrie = new Trie();
+        const allButtons = document.querySelectorAll('.crop-btn');
+
+        allButtons.forEach(btn => {
+            cropTrie.insert(btn.innerText);
+        });
+
+        const searchInput = document.querySelector('.search-input');
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val === "") {
+                allButtons.forEach(btn => btn.style.display = "block");
+            } else {
+                const matches = cropTrie.search(val);
+                const matchSet = new Set(matches);
+                allButtons.forEach(btn => {
+                    if (matchSet.has(btn.innerText)) {
+                        btn.style.display = "block";
+                    } else {
+                        btn.style.display = "none";
+                    }
+                });
+            }
+        });
+
+        const counterText = document.getElementById('counter-text');
+        let count = 0;
+
+        allButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('selected');
+                if (btn.classList.contains('selected')) {
+                    count++;
+                } else {
+                    count--;
+                }
+                counterText.textContent = count + " Trees Selected";
+            });
+        });
+    </script>
+{% endblock %}

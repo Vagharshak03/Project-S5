@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile - PlanTree</title>
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
     <style>
         * {
             margin: 0;
@@ -214,69 +213,26 @@
         }
 
     </style>
-</head>
-<body>
+    <div class="card">
+        <img src="{{ asset('img/user.png') }}" alt="Profile" class="profile-pic">
 
-<!-- Go to Main Page Button -->
-<a href="{{ path('georoots_index') }}" class="btn-home">
-    <svg class="home-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-    </svg>
-    Home
-</a>
+        <h2 class="user-name">{{ user.name|default('Guest') }}</h2>
+        <p class="user-email">{{ user.email|default('Not provided') }}</p>
 
-<div class="card">
-    <!-- User Pic -->
-    <img src="https://via.placeholder.com/150/10B981/FFFFFF?text=User" alt="Profile" class="profile-pic">
-
-    <!-- User Info -->
-    <h2 class="user-name" id="display-name">Loading...</h2>
-    <p class="user-email" id="display-email">loading@example.com</p>
-
-    <!-- Stats -->
-    <div class="stats-container">
-        <div class="stat-box">
-            <span class="stat-number">0</span>
-            <span class="stat-label">Trees Planted</span>
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Trees Planted</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">$0</span>
+                <span class="stat-label">Donated</span>
+            </div>
         </div>
-        <div class="stat-box">
-            <span class="stat-number">$0</span>
-            <span class="stat-label">Donated</span>
-        </div>
+
+        <a href="{{ path('georoots_donate') }}" class="btn-action btn-donate-style">Donate Funds</a>
+        <a href="{{ path('georoots_register') }}" class="btn-action">Choose a Tree to Plant</a>
+        <a href="#" class="btn-action">Go to Map</a>
+        <a href="{{ path('logout') }}"><button onclick="logout()" class="btn-logout">Sign Out</button></a>
     </div>
-
-    <!-- 1. DONATE BUTTON -->
-    <a href="{{ path('georoots_donate') }}" class="btn-action btn-donate-style">
-        <!-- Heart Icon -->
-        <svg class="action-icon" viewBox="0 0 24 24">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-        </svg>
-        Donate Funds
-    </a>
-
-    <!-- 2. CHOOSE TREE BUTTON -->
-    <a href="{{ path('georoots_register') }}" class="btn-action">
-        <!-- Leaf Icon -->
-        <svg class="action-icon" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-        </svg>
-        Choose a Tree to Plant
-    </a>
-
-    <!-- 3. GO TO MAP BUTTON -->
-    <a href="#" class="btn-action">
-        <!-- Map Pin Icon -->
-        <svg class="action-icon" viewBox="0 0 24 24">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        Go to Map
-    </a>
-
-    <!-- 4. SIGN OUT BUTTON (Existing) -->
-    <button onclick="logout()" class="btn-logout">Sign Out</button>
-</div>
-
-</body>
-</html>
+{% endblock %}

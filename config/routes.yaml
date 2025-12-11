@@ -4,3 +4,12 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+georoots_register:
+    path: /register
+    controller: App\Controller\AuthController::register
+
+georoots_login:
+    path: /login
+    controller: App\Controller\AuthController::login
+
+
