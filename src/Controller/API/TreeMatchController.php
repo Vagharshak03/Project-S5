@@ -61,14 +61,12 @@ class TreeMatchController extends AbstractController
     public function checkSuitability(Request $request): JsonResponse
     {
         $lat = $request->query->get('lat');
-        $treeWatering = $request->query->get('watering', 'Average'); // Sent from Frontend
+        $treeWatering = $request->query->get('watering', 'Average');
 
         if (!$lat) return new JsonResponse(['error' => 'Coordinates required'], 400);
 
-        // 1. Calculate Environmental Zone
         $regionZone = $this->calculateHardinessZone((float)$lat);
 
-        // 2. Suitability Algorithm
         $isSuitable = true;
         $reason = "Excellent conditions for this species in Zone {$regionZone}.";
 
