@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Tree Placement Analysis</title>
+    <title>Tree Placement & Graph Analysis</title>
     <style>
         body, html { margin:0; padding:0; height:100%; font-family:'Segoe UI', sans-serif; }
         #map { width:100%; height:100vh; }
@@ -10,7 +10,7 @@
         /* Floating Panel Styles */
         .ui-panel {
             position: absolute; top: 20px; left: 20px; z-index: 50;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255,255,255,0.96);
             width: 340px; padding: 15px; border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
@@ -20,9 +20,12 @@
         /* Inputs & Buttons */
         .input-row { display: flex; gap: 5px; margin-top: 5px; }
         input[type="text"] { flex: 1; padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; outline:none; }
-        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:600; }
+        button { padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:600; transition: all 0.2s; }
         button:hover { background: #34495e; }
-        button:disabled { background: #95a5a6; cursor: default; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; opacity: 0.7; }
+
+        /* Special Purple Graph Button */
+        #btnOptimize:not(:disabled):hover { background: #9b59b6 !important; transform: scale(1.02); }
 
         /* Tree Status Card */
         .tree-profile {
@@ -49,12 +52,11 @@
 
 <div class="ui-panel">
     <h2>🌲 Georoots Matcher</h2>
-    <div style="font-size:12px; color:#555;">Find optimal areas to plant specific trees.</div>
+    <div style="font-size:12px; color:#555;">Smart Reforestation Intelligence</div>
 
     <!-- 1. TREE SECTION -->
     <span class="label-text">1. Selected Tree Specimen</span>
     <div class="input-row">
-        <!-- Input Value populated by Controller if passed -->
         <input id="treeInput" type="text" placeholder="E.g. Eucalyptus..." value="{{ treeName }}">
         <button id="btnLoadTree">Load</button>
     </div>
@@ -79,72 +81,223 @@
         <button id="btnMapIt" style="background:#27ae60;">Scan Map</button>
     </div>
 
-    <!-- Analysis Output -->
     <div id="analysisBox" class="analysis-result" style="color:#7f8c8d; font-style:italic;">
-        Load a tree and search a location to begin analysis.
+        Waiting for data...
     </div>
+
+    <hr style="border:0; border-top:1px solid #ecf0f1; margin:15px 0;">
+
+    <!-- 3. GRAPH THEORY SECTION -->
+    <span class="label-text">3. Logistics Optimization</span>
+    <div class="input-row">
+        <button id="btnOptimize" disabled style="background:#8e44ad; width:100%;">
+            ⛓ Connect Nodes (MST Graph)
+        </button>
+    </div>
+    <div id="graphStats" style="font-size:11px; margin-top:5px; text-align:center; color:#8e44ad; font-weight:bold;"></div>
 
     <!-- Legend -->
     <div class="legend" id="mapLegend" style="opacity:0.5;">
         <div class="legend-item"><span style="background:#2ecc71;"></span>Existing Forest</div>
-        <div class="legend-item"><span style="background:#c0392b; border:2px solid #7b241c;"></span>Vacant / Plant Here</div>
+        <div class="legend-item"><span style="background:#e74c3c;"></span>Planting Zone (Node)</div>
     </div>
 </div>
 
 <div id="map"></div>
 
 <script>
+    // --- GLOBAL VARIABLES ---
     let map;
-    let currentTree = null;   // Stores Biology data
-    let currentMatch = null;  // Stores Boolean: isSuitable?
+    let currentTree = null;   // Biology Data
+    let currentMatch = null;  // Boolean Suitability
+    let suitableNodes = [];   // ARRAY FOR GRAPH VERTICES (V)
+    let networkLayer = [];    // ARRAY FOR GRAPH EDGES (E) - Polyline objects
 
-    // Incoming tree name from PHP
     const SERVER_TREE_NAME = "{{ treeName|escape('js') }}";
 
+    // --- GRAPH THEORY UTILITIES (KRUSKAL'S ALGORITHM) ---
+
+    // 1. Disjoint Set (Union-Find) for Cycle Detection
+    class DisjointSet {
+        constructor(size) {
+            this.parent = new Array(size);
+            for (let i = 0; i < size; i++) this.parent[i] = i;
+        }
+        find(i) {
+            if (this.parent[i] === i) return i;
+            return this.parent[i] = this.find(this.parent[i]);
+        }
+        union(i, j) {
+            const rootI = this.find(i);
+            const rootJ = this.find(j);
+            if (rootI !== rootJ) {
+                this.parent[rootI] = rootJ;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    // 2. Minimum Spanning Tree Calculator
+    function performKruskalMST(points) {
+        const edges = [];
+        const size = points.length;
+
+        // Step A: Complete Graph Construction
+        // Calculate weight (distance) between every pair of nodes
+        for (let i = 0; i < size; i++) {
+            for (let j = i + 1; j < size; j++) {
+                const dist = getDistance(points[i], points[j]);
+                edges.push({ u: i, v: j, w: dist });
+            }
+        }
+
+        // Step B: Sort Edges by Weight (Greedy Approach)
+        edges.sort((a, b) => a.w - b.w);
+
+        const ds = new DisjointSet(size);
+        const mstEdges = [];
+        let totalDistance = 0;
+
+        // Step C: Build Tree avoiding cycles
+        for (const edge of edges) {
+            if (ds.union(edge.u, edge.v)) {
+                mstEdges.push({
+                    from: points[edge.u],
+                    to: points[edge.v],
+                    weight: edge.w
+                });
+                totalDistance += edge.w;
+            }
+            if (mstEdges.length === size - 1) break;
+        }
+
+        return { edges: mstEdges, totalKm: (totalDistance / 1000).toFixed(2) };
+    }
+
+    // Distance Helper (Haversine approx)
+    function getDistance(p1, p2) {
+        const R = 6371e3; // Earth radius in meters
+        const rad = Math.PI / 180;
+        const dLat = (p2.lat - p1.lat) * rad;
+        const dLng = (p2.lng - p1.lng) * rad;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(p1.lat * rad) * Math.cos(p2.lat * rad) *
+            Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    // --- MAP INITIALIZATION ---
     function initMap() {
-        // Init Google Maps (Satellite is best for deforestation viewing)
         map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: -2.333, lng: -55.123 }, // Default to Brazil/Amazon center
+            center: { lat: -2.333, lng: -55.123 }, // Amazon Center
             zoom: 5,
             mapTypeId: 'satellite',
-            fullscreenControl: false, streetViewControl: false
+            fullscreenControl: false,
+            streetViewControl: false
         });
 
-        // Setup Listener for Clicks
+        // Main Map Click Listener
         map.addListener('click', (e) => {
             handleLocationUpdate(e.latLng.lat(), e.latLng.lng());
         });
 
-        // If PHP sent a name, Auto-load
+        // Auto Load if Name Exists
         if(SERVER_TREE_NAME) {
             fetchTreeBiology(SERVER_TREE_NAME);
-            document.getElementById('treeInput').disabled = true; // Lock input
-            document.getElementById('btnLoadTree').style.display = 'none'; // Hide button
+            document.getElementById('treeInput').disabled = true;
+            document.getElementById('btnLoadTree').style.display = 'none';
         }
     }
 
-    // --- LOGIC A: LOAD TREE BIOLOGY ---
+    // --- UI EVENT HANDLERS ---
+
+    // 1. Button: Run Graph Optimization
+    document.getElementById('btnOptimize').addEventListener('click', () => {
+        if (suitableNodes.length < 2) {
+            alert("Not enough nodes (Suitable Areas) to connect.");
+            return;
+        }
+
+        // Clean previous lines
+        networkLayer.forEach(line => line.setMap(null));
+        networkLayer = [];
+
+        // Run Logic
+        document.getElementById('btnOptimize').innerText = "Computing...";
+
+        setTimeout(() => { // Small timeout to allow UI update
+            const result = performKruskalMST(suitableNodes);
+
+            // Draw Lines
+            const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 }; // Dashed effect
+
+            result.edges.forEach(edge => {
+                const line = new google.maps.Polyline({
+                    path: [edge.from, edge.to],
+                    geodesic: true,
+                    strokeColor: "#8e44ad",
+                    strokeOpacity: 0,
+                    strokeWeight: 2,
+                    icons: [{ icon: lineSymbol, offset: '0', repeat: '20px' }],
+                    zIndex: 200,
+                    map: map
+                });
+                networkLayer.push(line);
+            });
+
+            // Update UI
+            document.getElementById('graphStats').innerHTML = `Connected ${suitableNodes.length} nodes<br>Total Network Length: ${result.totalKm} km`;
+            document.getElementById('btnOptimize').innerText = "✓ Route Optimized";
+            setTimeout(() => {
+                document.getElementById('btnOptimize').innerText = "⛓ Recalculate MST";
+            }, 3000);
+        }, 50);
+    });
+
+    // 2. Button: Load Tree
     document.getElementById('btnLoadTree').addEventListener('click', () => {
         const val = document.getElementById('treeInput').value;
         if(val) fetchTreeBiology(val);
     });
 
+    // 3. Button: Search City
+    document.getElementById('btnMapIt').addEventListener('click', async () => {
+        const city = document.getElementById('cityInput').value;
+        if(!city) return;
+
+        const btn = document.getElementById('btnMapIt');
+        btn.innerText = "...";
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+            const locs = await res.json();
+            if(!locs.length) throw new Error("City not found");
+            const lat = parseFloat(locs[0].lat);
+            const lng = parseFloat(locs[0].lon);
+
+            map.setCenter({lat, lng});
+            map.setZoom(11);
+            handleLocationUpdate(lat, lng);
+        } catch(e) { alert(e.message); }
+        finally { btn.innerText = "Scan Map"; }
+    });
+
+
+    // --- CORE LOGIC FUNCTIONS ---
+
     async function fetchTreeBiology(name) {
         const card = document.getElementById('treeCard');
         card.style.display = 'block';
         card.innerHTML = '<div style="text-align:center"><span class="spin"></span> finding biology...</div>';
-
         try {
             const res = await fetch(`/api/find-tree-profile?q=${encodeURIComponent(name)}`);
             const data = await res.json();
-
             if(data.error) throw new Error(data.error);
 
-            // Save Global
-            currentTree = data;
+            currentTree = data; // Set Global
 
-            // Render Card
-            const bg = data.image ? `url(${data.image})` : 'gray';
+            const bg = data.image ? `url(${data.image})` : '#eee';
             card.className = "tree-profile profile-loaded";
             card.innerHTML = `
                 <div style="display:flex; align-items:center;">
@@ -154,142 +307,144 @@
                         <div style="font-size:11px;">Water: <b>${data.watering}</b> | Scientific: <i>${data.scientific_name}</i></div>
                     </div>
                 </div>`;
-
         } catch(e) {
             card.innerHTML = `<div style="color:red; font-size:11px;">Error: ${e.message}</div>`;
         }
     }
 
-    // --- LOGIC B: LOCATION SEARCH ---
-    document.getElementById('btnMapIt').addEventListener('click', async () => {
-        const city = document.getElementById('cityInput').value;
-        if(!city) return;
-
-        // Geocoding via Nominatim (Free)
-        try {
-            document.getElementById('btnMapIt').innerText = "...";
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
-            const locs = await res.json();
-
-            if(!locs.length) throw new Error("City not found");
-
-            const lat = parseFloat(locs[0].lat);
-            const lng = parseFloat(locs[0].lon);
-
-            // Move Map
-            map.setCenter({lat, lng});
-            map.setZoom(11); // Closer zoom to see polygons
-
-            // Execute Full Logic
-            handleLocationUpdate(lat, lng);
-
-        } catch(e) { alert(e.message); }
-        finally { document.getElementById('btnMapIt').innerText = "Scan Map"; }
-    });
-
-    // --- MAIN ORCHESTRATOR ---
     async function handleLocationUpdate(lat, lng) {
-        // 1. Analyze Suitability
+        // 1. Check Physics
         await performSuitabilityCheck(lat);
 
-        // 2. Load Polygons (Using logic from ForestCoverController)
-        // Note: We use a larger radius to ensure we find "Red Areas" nearby
-        const radius = 25000;
-        const polygonUrl = `/api/forest-cover?lat=${lat}&lng=${lng}&radius=${radius}`;
-
-        loadAndStylePolygons(polygonUrl);
+        // 2. Load Geometry (Logic + Math)
+        // Note: Using 25km radius to ensure we find enough nodes for graph
+        loadAndStylePolygons(`/api/forest-cover?lat=${lat}&lng=${lng}&radius=25000`);
     }
 
-    // --- LOGIC C: SUITABILITY CHECK ---
     async function performSuitabilityCheck(lat) {
         const ui = document.getElementById('analysisBox');
         if(!currentTree) {
             ui.innerHTML = "⚠️ Please load a tree first!";
             return;
         }
-
-        ui.innerHTML = "<span class='spin'></span> Checking environment compatibility...";
-
+        ui.innerHTML = "<span class='spin'></span> Assessing Ecosystem...";
         try {
             const url = `/api/check-suitability?lat=${lat}&watering=${currentTree.watering}`;
             const res = await fetch(url);
             const json = await res.json();
-
-            currentMatch = json.is_suitable; // Store True/False
+            currentMatch = json.is_suitable;
 
             if(json.is_suitable) {
                 ui.className = "analysis-result result-good";
-                ui.innerHTML = `<strong>✔ OPTIMAL AREA!</strong><br>${json.message}<br><small>Red polygons on map are currently EMPHASIZED for planting.</small>`;
+                ui.innerHTML = `<strong>✔ OPTIMAL AREA!</strong><br>${json.message}<br><small>Red areas are candidates for Graph Optimization.</small>`;
             } else {
                 ui.className = "analysis-result result-bad";
-                ui.innerHTML = `<strong>✘ UNSUITABLE.</strong><br>${json.message}<br><small>Do not plant here.</small>`;
+                ui.innerHTML = `<strong>✘ UNSUITABLE.</strong><br>${json.message}`;
             }
-
         } catch(e) { ui.innerHTML = "Analysis Failed."; }
     }
 
-    // --- LOGIC D: ARC GIS POLYGON HANDLING (Emphasize Red) ---
+    // --- GEOMETRY HANDLER (Combined Visuals + Math) ---
     async function loadAndStylePolygons(url) {
-        // Clean old data
+        // A. Reset Everything
         map.data.forEach(f => map.data.remove(f));
+        networkLayer.forEach(l => l.setMap(null));
+        networkLayer = [];
+        suitableNodes = []; // Reset Nodes
+
+        // Disable Graph Button temporarily
+        document.getElementById('btnOptimize').disabled = true;
+        document.getElementById('graphStats').innerHTML = '';
 
         try {
             const res = await fetch(url);
             const geoData = await res.json();
+
+            // B. Add Data to Map
             map.data.addGeoJson(geoData);
 
-            // *** CRITICAL STYLING LOGIC ***
-            // Use Data from Logic C (currentMatch) to dictate style
+            // C. Iterate Features to find NODES (Math) and Set STYLE (Visuals)
             map.data.setStyle(feature => {
                 const props = feature.getProperty('attributes') || feature.getProperty('properties') || {};
-
-                // 1. IDENTIFY IF FOREST OR EMPTY
-                // Simple heuristic based on ArcGIS GFW data structure
-                // Adjust keyword regex if your specific layer uses different terms
                 const attrString = JSON.stringify(props).toLowerCase();
-                const isExistingForest = /forest|tree|wood/.test(attrString);
+                const isForest = /forest|tree|wood/.test(attrString);
 
-                // 2. DEFINE STYLES
-                if (isExistingForest) {
-                    // It's already a forest. Keep it green or make it subtle.
+                // LOGIC: VACANT AREA + BIOLOGICALLY SUITABLE
+                if (!isForest && currentMatch === true) {
+
+                    // 1. Calculate Graph Node (Centroid)
+                    const geo = feature.getGeometry();
+                    let center = null;
+                    if (geo.getType() === 'Polygon') {
+                        const path = geo.getArray()[0];
+                        let latS=0, lngS=0, len=path.getLength();
+                        for(let i=0;i<len;i++){ latS+=path.getAt(i).lat(); lngS+=path.getAt(i).lng(); }
+                        center = { lat: latS/len, lng: lngS/len };
+                    } else if (geo.getType() === 'MultiPolygon') {
+                        // Approximate first polygon center
+                        const p = geo.getArray()[0].getArray()[0].getAt(0);
+                        center = { lat: p.lat(), lng: p.lng() };
+                    }
+
+                    // 2. Store Node if Valid (For MST later)
+                    // We check if it's already in the array to avoid dupes (optimization)
+                    if(center) {
+                        // Only push if not re-styling existing (Style runs on zoom/drag too)
+                        // But for simplicity in this flow, we will clear array before addGeoJson anyway.
+                        // *However*, style runs often. To be safe, we populate `suitableNodes`
+                        // only if this logic runs freshly.
+                        // **BETTER APPROACH:** The safest way for "Graph Button" state
+                        // is to verify array length after Data Load.
+                    }
+
+                    // Return Highlight Style
                     return {
-                        fillColor: '#2ecc71',
-                        fillOpacity: 0.3,
-                        strokeColor: '#27ae60',
-                        strokeWeight: 1,
-                        zIndex: 1
+                        fillColor: '#e74c3c', fillOpacity: 0.65,
+                        strokeColor: '#c0392b', strokeWeight: 3, zIndex: 100
                     };
-                } else {
-                    // It is "Empty" / "Vacant" / "Deforested" (Our Target)
+                }
+                else if (isForest) {
+                    return { fillColor: '#2ecc71', fillOpacity: 0.35, strokeColor: 'transparent', zIndex: 1 };
+                }
+                else {
+                    return { fillColor: '#95a5a6', fillOpacity: 0.15, strokeColor: '#bdc3c7', strokeWeight: 1, zIndex: 2 };
+                }
+            });
 
-                    if (currentMatch === true) {
-                        // SCENARIO: SUITABLE! -> EMPHASIZE THIS RED POLYGON
-                        return {
-                            fillColor: '#e74c3c', // Strong Red
-                            fillOpacity: 0.6,     // More visible
-                            strokeColor: '#c0392b', // Dark Red Border
-                            strokeWeight: 4,      // BOLD STROKE (The emphasis)
-                            zIndex: 100           // Bring to front
-                        };
-                    } else {
-                        // SCENARIO: NOT SUITABLE or Unknown -> Dim Red/Grey
-                        return {
-                            fillColor: '#95a5a6', // Greyish Red
-                            fillOpacity: 0.2,
-                            strokeColor: '#7f8c8d',
-                            strokeWeight: 1,
-                            zIndex: 2
-                        };
+            // D. Populate Nodes Array safely AFTER Map Load
+            // This prevents duplicate pushes every time the map re-draws style
+            map.data.forEach(feature => {
+                const props = feature.getProperty('attributes') || feature.getProperty('properties') || {};
+                const attrString = JSON.stringify(props).toLowerCase();
+                const isForest = /forest|tree|wood/.test(attrString);
+
+                if (!isForest && currentMatch === true) {
+                    const geo = feature.getGeometry();
+                    // Basic centroid logic re-run here strictly for data array
+                    if (geo.getType() === 'Polygon') {
+                        const path = geo.getArray()[0];
+                        let latS=0, lngS=0, len=path.getLength();
+                        for(let i=0;i<len;i++){ latS+=path.getAt(i).lat(); lngS+=path.getAt(i).lng(); }
+                        suitableNodes.push({ lat: latS/len, lng: lngS/len });
                     }
                 }
             });
 
-            // Make the legend opaque to signify map is active
+            // E. Enable Graph Button
+            if (suitableNodes.length > 1) {
+                document.getElementById('btnOptimize').disabled = false;
+                document.getElementById('btnOptimize').innerText = `⛓ Connect ${suitableNodes.length} Zones (MST)`;
+            } else {
+                document.getElementById('btnOptimize').innerText = "Need >1 zones for Graph";
+            }
+
+            // F. Show map
             document.getElementById('mapLegend').style.opacity = '1';
 
         } catch(e) { console.error("Map Data Error", e); }
     }
 </script>
+
 <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&callback=initMap"></script>
 </body>
 </html>

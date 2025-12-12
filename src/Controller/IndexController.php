@@ -61,7 +61,7 @@ class IndexController extends AbstractController
         return $this->render('georoots/profile.html.twig');
     }
 
-    #[Route('/treeChoice', name: 'georoots_treechoice')]
+    #[Route('/treechoice', name: 'georoots_treechoice')]
     public function treeChoice(): Response
     {
         return $this->render('georoots/treechoice.html.twig');
