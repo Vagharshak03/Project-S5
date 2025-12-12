@@ -6,15 +6,10 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 
-/var/
 var/
-/vendor/
 vendor/
-/public/videos/
 public/videos/
-/public/img/
-/public/tree\ images/
-/public/tree images/
+public/img/
 public/tree\ images/
 public/tree images/
 
