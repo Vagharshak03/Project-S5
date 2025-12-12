@@ -9,5 +9,8 @@
 /vendor/
 /public/videos/
 /public/img/
-/public/tree images/
+/public/tree\ images/
+public/tree\ images/
+/public/tree\ images
+
 ###< symfony/framework-bundle ###
