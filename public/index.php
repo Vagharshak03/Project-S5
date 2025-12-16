@@ -2,10 +2,8 @@
 
 use App\Kernel;
 
-// Original in local Symfony:
-require dirname(__DIR__).'/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload_runtime.php';
 
-// Change to:
-require __DIR__.'/vendor/autoload.php';
-
-
+return function (array $context) {
+    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+};
