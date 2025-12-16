@@ -113,6 +113,7 @@ a{
 .hero-gallery-wrapper {
     overflow: hidden;
     position: relative;
+    /*margin-top:115px;*/
 }
 
 .hero-gallery-roll {
