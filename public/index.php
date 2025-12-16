@@ -2,8 +2,10 @@
 
 use App\Kernel;
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+// Original in local Symfony:
+require dirname(__DIR__).'/vendor/autoload.php';
 
-return function (array $context) {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
-};
+// Change to:
+require __DIR__.'/vendor/autoload.php';
+
+
